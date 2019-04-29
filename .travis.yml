@@ -1,0 +1,16 @@
+sudo: false
+language: elixir
+elixir:
+  - 1.6
+otp_release:
+  - 21.2
+cache:
+  directories:
+    - _build
+    - deps
+install:
+  - mix local.hex --force
+  - mix local.rebar --force
+  - mix deps.get
+script:
+  - mix test

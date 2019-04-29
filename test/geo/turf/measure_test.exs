@@ -1,0 +1,42 @@
+defmodule Geo.Test.MeasureTest do
+  use ExUnit.Case
+  use Fixate.Case
+  alias Geo.Turf.Measure, as: M
+  doctest Geo.Turf.Measure
+
+  @fixture dcline: "along/dc-line.geojson"
+  @fixture dcpoints: "along/dc-points.geojson"
+  test "Along", ctx do
+    # 9 km
+    # assert M.along(ctx.dcline, 1.2, :miles) == ctx.dcpoints[0]
+    # assert M.along(ctx.dcline, 1, :miles) == ctx.dcpoints[1]
+    assert M.along(ctx.dcline, 1, :miles) != M.along(ctx.dcline, 20, :miles)
+    assert M.along(ctx.dcline, 1, :miles) != M.along(ctx.dcline, 1, :kilometers)
+    assert M.along(ctx.dcline, 1, :miles) == M.along(ctx.dcline, 1.6, :kilometers)
+  end
+
+  @fixture points: "distance/points.geojson"
+  test "Distance", ctx do
+    [start, finish] = ctx.points
+    assert M.distance(start, finish) == 97.13
+    assert M.distance(start, finish, :kilometers) == 97.13
+    assert M.distance(start, finish, :meters) == 97129.22
+    assert M.distance(start, finish, :miles) == 60.35
+    assert M.distance(start, finish, :nauticalmiles) == 52.45
+    assert M.distance(start, finish, :radians) == 0.02
+    assert M.distance(start, finish, :degrees) == 0.87
+  end
+
+  @fixture "length/polygon.geojson"
+  @fixture "length/route1.geojson"
+  @fixture "length/hike.geojson"
+  test "Length", ctx do
+    assert M.length(ctx.hike) == 3.05
+    assert M.length(ctx.hike, :miles) == 1.90
+    assert M.length(ctx.hike, :feet) == 10007.75
+    assert M.length(ctx.route1, :feet) == 1068691.81
+    assert M.length(ctx.polygon, :feet) == 18363.92
+  end
+
+
+end
