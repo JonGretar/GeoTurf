@@ -16,7 +16,7 @@ end
 
 ## Usage
 
-The library can perform functions on [Geo](https://github.com/bryanjos/geo) objects as well as basic mathematic functions useful in spatial analysis.
+The library can perform functions on [Geo](https://github.com/bryanjos/geo) objects as well as basic mathematic functions useful in spatial analysis. At the moment Geo.Turf expects WGS84 coordinates.
 
 For example:
 
