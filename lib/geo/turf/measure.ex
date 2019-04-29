@@ -14,7 +14,6 @@ defmodule Geo.Turf.Measure do
     #...>   |> Geo.Turf.Measure.along(200)
     #%Geo.Point{coordinates: {1, 1}}
   """
-  @spec along(Geo.LineString.t(), number() | :midpoint, atom()) :: Geo.Point.t()
   def along(%Geo.LineString{coordinates: coords}, distance, unit \\ :kilometers)
   when is_number(distance) do
     walk_along(coords, distance, unit, 0)
@@ -39,7 +38,6 @@ defmodule Geo.Turf.Measure do
       %Geo.Point{ coordinates: {5, 5} }
 
   """
-  @spec center(Geo.geometry()) :: Geo.Point.t()
   def center(geometry) when is_map(geometry) do
     {min_x, min_y, max_x, max_y} = bbox(geometry)
     if (is_integer(min_x) && is_integer(min_y) && is_integer(max_x) && is_integer(max_y)) do
@@ -85,13 +83,12 @@ defmodule Geo.Turf.Measure do
     ...>   :kilometers)
     97.13
   """
-  @spec distance(Geo.Turf.point(), Geo.Turf.point(), atom()) :: number()
   def distance(from, to, unit \\ :kilometers) do
     get_distance(from, to, unit)
     |> Math.rounded(2)
   end
 
-  defp get_distance(from, to, unit \\ :kilometers)
+  defp get_distance(from, to, unit)
   defp get_distance(%Geo.Point{coordinates: a}, %Geo.Point{coordinates: b}, unit), do: distance(a, b, unit)
   defp get_distance({x1, y1}, {x2, y2}, unit) do
     d_lat = Math.degrees_to_radians((y2 - y1));
@@ -107,7 +104,6 @@ defmodule Geo.Turf.Measure do
   @doc """
   Takes a `t:Geo.geometry()` and measures its length in the specified units.
   """
-  @spec length(Geo.geometry(), :atom) :: number()
   def length(feature, unit \\ :kilometers) do
     feature
     |> flatten_coords()
