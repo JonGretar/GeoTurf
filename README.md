@@ -1,4 +1,6 @@
 # Geo.Turf
+[![Build Status](https://www.travis-ci.org/JonGretar/GeoTurf.svg?branch=master)](https://www.travis-ci.org/JonGretar/GeoTurf)
+[![Coverage Status](https://coveralls.io/repos/github/JonGretar/GeoTurf/badge.svg?branch=master)](https://coveralls.io/github/JonGretar/GeoTurf?branch=master)
 
 A spatial analysis tool for Elixir's [Geo](https://github.com/bryanjos/geo) library ported from [TurfJS](http://turfjs.org/).
 
