@@ -115,13 +115,13 @@ defmodule Geo.Turf.Math do
   @doc """
   Round number to precision
 
-  # Example
+  ## Example
 
-    iex> Geo.Turf.Math.rounded(120.4321)
-    120
+      iex> Geo.Turf.Math.rounded(120.4321)
+      120
 
-    iex> Geo.Turf.Math.rounded(120.4321, 3)
-    120.432
+      iex> Geo.Turf.Math.rounded(120.4321, 3)
+      120.432
 
   """
   def rounded(number, precision \\ 0) when is_number(number) and is_integer(precision) and precision >= 0 do

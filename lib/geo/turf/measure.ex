@@ -11,9 +11,9 @@ defmodule Geo.Turf.Measure do
 
   ## Examples
 
-    iex> %Geo.LineString{coordinates: [{-23.621,64.769},{-23.629,64.766},{-23.638,64.766}]}
-    ...>   |> Geo.Turf.Measure.along(400, :meters)
-    %Geo.Point{coordinates: {-23.629,64.766}}
+      iex> %Geo.LineString{coordinates: [{-23.621,64.769},{-23.629,64.766},{-23.638,64.766}]}
+      ...>   |> Geo.Turf.Measure.along(400, :meters)
+      %Geo.Point{coordinates: {-23.629,64.766}}
   """
   def along(%Geo.LineString{coordinates: coords}, distance, unit \\ :kilometers)
   when is_number(distance) do
@@ -35,9 +35,9 @@ defmodule Geo.Turf.Measure do
 
   ## Examples
 
-    iex> %Geo.LineString{coordinates: [{-23.621,64.769},{-23.629,64.766},{-23.638,64.766}]}
-    ...>   |> Geo.Turf.Measure.along_midpoint()
-    %Geo.Point{coordinates: {-23.629, 64.766}}
+      iex> %Geo.LineString{coordinates: [{-23.621,64.769},{-23.629,64.766},{-23.638,64.766}]}
+      ...>   |> Geo.Turf.Measure.along_midpoint()
+      %Geo.Point{coordinates: {-23.629, 64.766}}
   """
   def along_midpoint(%Geo.LineString{} = line) do
     along(line, length_of(line) / 2)
@@ -72,13 +72,13 @@ defmodule Geo.Turf.Measure do
 
   ## Examples
 
-    iex> %Geo.Point{coordinates: {-22.653375, 64.844254}}
-    ...> |> Geo.Turf.Measure.close_to(%Geo.Point{coordinates: {-22.654042, 64.843656}})
-    true
+      iex> %Geo.Point{coordinates: {-22.653375, 64.844254}}
+      ...> |> Geo.Turf.Measure.close_to(%Geo.Point{coordinates: {-22.654042, 64.843656}})
+      true
 
-    iex> %Geo.Point{coordinates: {-22.653375, 64.844254}}
-    ...> |> Geo.Turf.Measure.close_to(%Geo.Point{coordinates: {-23.803020, 64.730435}}, 100, :kilometers)
-    true
+      iex> %Geo.Point{coordinates: {-22.653375, 64.844254}}
+      ...> |> Geo.Turf.Measure.close_to(%Geo.Point{coordinates: {-23.803020, 64.730435}}, 100, :kilometers)
+      true
 
   """
   def close_to(point_a, point_b, maximum \\ 100, units \\ :meters) do
@@ -91,11 +91,11 @@ defmodule Geo.Turf.Measure do
 
   ## Examples
 
-    iex> Geo.Turf.Measure.distance(
-    ...>   %Geo.Point{coordinates: {-75.343, 39.984}},
-    ...>   %Geo.Point{coordinates: {-75.534, 39.123}},
-    ...>   :kilometers)
-    97.13
+      iex> Geo.Turf.Measure.distance(
+      ...>   %Geo.Point{coordinates: {-75.343, 39.984}},
+      ...>   %Geo.Point{coordinates: {-75.534, 39.123}},
+      ...>   :kilometers)
+      97.13
   """
   def distance(from, to, unit \\ :kilometers) do
     get_distance(from, to, unit)
@@ -118,10 +118,11 @@ defmodule Geo.Turf.Measure do
   @doc """
   Takes a `t:Geo.geometry()` and measures its length in the specified units.
 
-  # Examples
-    iex> %Geo.LineString{coordinates: [{-23.621,64.769},{-23.629,64.766},{-23.638,64.766}]}
-    ...>   |> Geo.Turf.Measure.length_of()
-    0.93
+  ## Examples
+
+      iex> %Geo.LineString{coordinates: [{-23.621,64.769},{-23.629,64.766},{-23.638,64.766}]}
+      ...>   |> Geo.Turf.Measure.length_of()
+      0.93
   """
   def length_of(feature, unit \\ :kilometers) do
     feature

@@ -76,7 +76,7 @@ defmodule Geo.Turf.Math.Test do
   test "modulo" do
     assert M.mod(10, 1) == 0
     assert M.mod(10.0, 2.0) == 0.0
-    assert M.mod(10, 3) == 2.0
+    assert M.mod(10, 3) == 1.0
     assert M.mod(10.0, 4) == 2.0
   end
 

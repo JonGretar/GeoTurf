@@ -11,7 +11,7 @@ defmodule Geo.Turf do
   ```elixir
   def deps do
     [
-      {:geo_turf, git: "https://github.com/JonGretar/GeoTurf.git"}
+      {:geo_turf, "~> 0.1"}
     ]
   end
   ```
@@ -22,11 +22,12 @@ defmodule Geo.Turf do
 
   For example:
 
-  * `Geo.Turf.Measure.along/3`: Make a `%Geo.Point{}` at a definded distance from the start of a `%Geo.LineString{}` .
-  * `Geo.Turf.Measure.center/1`: Makes a `%Geo.Point{}` at the center of a Feature.
-  * `Geo.Turf.Measure.close_to/4`: Check if 2 `%Geo.Point{}` items are close to each other.
-  * `Geo.Turf.Measure.distance/3`: Check the distance between 2 `%Geo.Point{}` items.
-  * `Geo.Turf.Measure.length/2`: Gives the length of a `%Geo.LineString{}` or the circumference of a `%Geo.Polygon{}`
+    * `Geo.Turf.Measure.along/3`: Make a `%Geo.Point{}` at a definded distance from the start of a `%Geo.LineString{}` .
+    * `Geo.Turf.Measure.along_midpoint/1`: Make a `%Geo.Point{}` at a the middle of a `%Geo.LineString{}` .
+    * `Geo.Turf.Measure.center/1`: Makes a `%Geo.Point{}` at the center of a Feature.
+    * `Geo.Turf.Measure.close_to/4`: Check if 2 `%Geo.Point{}` items are close to each other.
+    * `Geo.Turf.Measure.distance/3`: Check the distance between 2 `%Geo.Point{}` items.
+    * `Geo.Turf.Measure.length_of/2`: Gives the length of a `%Geo.LineString{}` or the circumference of a `%Geo.Polygon{}`
 
   ## Suggestions
 
