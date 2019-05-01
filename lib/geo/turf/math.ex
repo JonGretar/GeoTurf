@@ -78,20 +78,17 @@ defmodule Geo.Turf.Math do
 
 
   @spec radians_to_length(number(), length_unit) :: number()
-  def radians_to_length(radians, unit \\ :kilometers)
-  when is_number(radians) do
+  def radians_to_length(radians, unit \\ :kilometers) when is_number(radians) do
     radians * @factors[unit]
   end
 
   @spec length_to_radians(number(), length_unit) :: float()
-  def length_to_radians(length, unit \\ :kilometers)
-  when is_number(length) do
+  def length_to_radians(length, unit \\ :kilometers) when is_number(length) do
     length / @factors[unit]
   end
 
   @spec length_to_degrees(number(), length_unit) :: float()
-  def length_to_degrees(length, units \\ :kilometers)
-  when is_number(length) do
+  def length_to_degrees(length, units \\ :kilometers) when is_number(length) do
     radians_to_degrees(length_to_radians(length, units))
   end
 
@@ -127,8 +124,7 @@ defmodule Geo.Turf.Math do
     120.432
 
   """
-  def rounded(number, precision \\ 0)
-  when is_number(number) and is_integer(precision) and precision >= 0 do
+  def rounded(number, precision \\ 0) when is_number(number) and is_integer(precision) and precision >= 0 do
     multiplier = :math.pow(10, precision)
     case precision do
       0 -> round(round(number * multiplier) / multiplier)
@@ -137,14 +133,12 @@ defmodule Geo.Turf.Math do
   end
 
   @spec convert_length(number, length_unit, length_unit) :: number
-  def convert_length(length, from \\ :kilometers, to \\ :kilometers)
-  when is_number(length) and length >= 0 do
+  def convert_length(length, from \\ :kilometers, to \\ :kilometers) when is_number(length) and length >= 0 do
     radians_to_length(length_to_radians(length, from), to)
   end
 
   @spec convert_area(number, length_unit, length_unit) :: number
-  def convert_area(area, from \\ :meters, to \\ :kilometers)
-  when is_number(area) and area >= 0 do
+  def convert_area(area, from \\ :meters, to \\ :kilometers) when is_number(area) and area >= 0 do
     (area / @area_factors[from]) * @area_factors[to]
   end
 

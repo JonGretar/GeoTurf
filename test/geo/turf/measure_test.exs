@@ -15,6 +15,13 @@ defmodule Geo.Test.MeasureTest do
     assert M.along(ctx.dcline, 1, :miles) == M.along(ctx.dcline, 1.6, :kilometers)
   end
 
+  test "Center" do
+    box = %Geo.Polygon{coordinates: [{0,0}, {0,10}, {10,10}, {10,0}]}
+    floating_box = %Geo.Polygon{coordinates: [{0.0,0.0}, {0.0,10.0}, {10.0,10.0}, {10.0,0.0}]}
+    assert Geo.Turf.Measure.center(box) == %Geo.Point{ coordinates: {5, 5} }
+    assert Geo.Turf.Measure.center(floating_box) == %Geo.Point{ coordinates: {5.0, 5.0} }
+  end
+
   @fixture points: "distance/points.geojson"
   test "Distance", ctx do
     [start, finish] = ctx.points
