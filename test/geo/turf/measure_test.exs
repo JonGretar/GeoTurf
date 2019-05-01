@@ -31,11 +31,11 @@ defmodule Geo.Test.MeasureTest do
   @fixture "length/route1.geojson"
   @fixture "length/hike.geojson"
   test "Length", ctx do
-    assert M.length(ctx.hike) == 3.05
-    assert M.length(ctx.hike, :miles) == 1.90
-    assert M.length(ctx.hike, :feet) == 10007.75
-    assert M.length(ctx.route1, :feet) == 1068691.81
-    assert M.length(ctx.polygon, :feet) == 18363.92
+    assert M.length_of(ctx.hike) == 3.05
+    assert M.length_of(ctx.hike, :miles) == 1.90
+    assert M.length_of(ctx.hike, :feet) == 10007.75
+    assert M.length_of(ctx.route1, :feet) == 1068691.81
+    assert M.length_of(ctx.polygon, :feet) == 18363.92
   end
 
 

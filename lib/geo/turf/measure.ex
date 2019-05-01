@@ -7,12 +7,13 @@ defmodule Geo.Turf.Measure do
 
   @doc """
   Takes a LineString and returns a Point at a specified distance along the line.
+  Note that this will aproximate location to the nearest coordinate point.
 
   ## Examples
 
-    #iex> %Geo.LineString{coordinates: [{-83, 30}, {-84, 36}, {-78, 41}]}
-    #...>   |> Geo.Turf.Measure.along(200)
-    #%Geo.Point{coordinates: {1, 1}}
+    iex> %Geo.LineString{coordinates: [{-23.621,64.769},{-23.629,64.766},{-23.638,64.766}]}
+    ...>   |> Geo.Turf.Measure.along(400, :meters)
+    %Geo.Point{coordinates: {-23.629,64.766}}
   """
   def along(%Geo.LineString{coordinates: coords}, distance, unit \\ :kilometers)
   when is_number(distance) do
@@ -28,6 +29,19 @@ defmodule Geo.Turf.Measure do
   end
   defp walk_along([{x,y}], _distance, _unit, _acc), do: %Geo.Point{coordinates: {x,y}}
   defp walk_along([], _distance, _unit, _acc), do: :error
+
+  @doc """
+  Takes a LineString and returns a Point at the middle of the line.
+
+  ## Examples
+
+    iex> %Geo.LineString{coordinates: [{-23.621,64.769},{-23.629,64.766},{-23.638,64.766}]}
+    ...>   |> Geo.Turf.Measure.along_midpoint()
+    %Geo.Point{coordinates: {-23.629, 64.766}}
+  """
+  def along_midpoint(%Geo.LineString{} = line) do
+    along(line, length_of(line) / 2)
+  end
 
   @doc """
   Find the center of a `Geo.geometry()` item and give us a `Geo.Point`
@@ -103,8 +117,13 @@ defmodule Geo.Turf.Measure do
 
   @doc """
   Takes a `t:Geo.geometry()` and measures its length in the specified units.
+
+  # Examples
+    iex> %Geo.LineString{coordinates: [{-23.621,64.769},{-23.629,64.766},{-23.638,64.766}]}
+    ...>   |> Geo.Turf.Measure.length_of()
+    0.93
   """
-  def length(feature, unit \\ :kilometers) do
+  def length_of(feature, unit \\ :kilometers) do
     feature
     |> flatten_coords()
     |> walk_length(unit, 0)
