@@ -1,20 +1,14 @@
 # Geo.Turf
 [![Build Status](https://www.travis-ci.org/JonGretar/GeoTurf.svg?branch=master)](https://www.travis-ci.org/JonGretar/GeoTurf)
 [![Coverage Status](https://coveralls.io/repos/github/JonGretar/GeoTurf/badge.svg?branch=master)](https://coveralls.io/github/JonGretar/GeoTurf?branch=master)
+[![hex.pm](https://img.shields.io/hexpm/v/geo_turf.svg)](https://hex.pm/packages/geo_turf)
 
-A spatial analysis tool for Elixir's [Geo](https://github.com/bryanjos/geo) library ported from [TurfJS](http://turfjs.org/).
 
-## Installation
+An Elixir spatial analysis tool for the [Geo](https://github.com/bryanjos/geo) library ported from [TurfJS](http://turfjs.org/).
 
-*At the moment the library is in early development mode. The API could, and propably will, change on any moment.*
+## Warning
 
-```elixir
-def deps do
-  [
-    {:geo_turf, "~> 0.1"}
-  ]
-end
-```
+**At the moment the library is in early development mode. The API could, and propably will, change on any moment.**
 
 ## Usage
 

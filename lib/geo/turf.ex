@@ -2,19 +2,11 @@ defmodule Geo.Turf do
   @moduledoc """
   # Geo.Turf
 
-  A spatial analysis tool for Elixir's [Geo](https://github.com/bryanjos/geo) library ported from [TurfJS](http://turfjs.org/).
+  An Elixir spatial analysis tool for the [Geo](https://github.com/bryanjos/geo) library ported from [TurfJS](http://turfjs.org/).
 
-  ## Installation
+  ## Warning
 
   *At the moment the library is in early development mode. The API could, and propably will, change on any moment.*
-
-  ```elixir
-  def deps do
-    [
-      {:geo_turf, "~> 0.1"}
-    ]
-  end
-  ```
 
   ## Usage
 
