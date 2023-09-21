@@ -38,9 +38,9 @@ defmodule Geo.Turf.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:geo, "~> 3.1"},
-      {:ex_doc, "~> 0.20", only: :dev},
-      {:jason, "~> 1.1", only: [:dev, :test]},
+      {:geo, "~> 3.5"},
+      {:ex_doc, "~> 0.30", only: :dev},
+      {:jason, "~> 1.4", only: [:dev, :test]},
       {:excoveralls, "~> 0.10.6", only: :test},
       {:fixate, "~> 0.1", only: :test}
     ]
