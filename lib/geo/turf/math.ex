@@ -95,15 +95,13 @@ defmodule Geo.Turf.Math do
   @spec radians_to_degrees(number()) :: float()
   def radians_to_degrees(radians) when is_number(radians) do
     degrees = mod(radians, @tau)
-    result = degrees * 180 / :math.pi;
-    if radians > 0, do: result, else: -result
+    degrees * 180 / :math.pi
   end
 
   @spec degrees_to_radians(number()) :: float()
   def degrees_to_radians(degrees) when is_number(degrees) do
     radians = mod(degrees, 360)
-    result = radians * :math.pi / 180;
-    if degrees > 0, do: result, else: -result
+    radians * :math.pi / 180
   end
 
   @spec bearing_to_azimuth(number()) :: number()
@@ -164,6 +162,7 @@ defmodule Geo.Turf.Math do
   """
   @spec mod(Number.t(), Number.t()) :: Number.t()
 
+  def mod(number, modulus) when number < 0, do: -mod(abs(number), modulus)
   def mod(number, modulus) when is_float(number) and is_number(modulus) do
     number - Float.floor(number / modulus) * modulus
   end
