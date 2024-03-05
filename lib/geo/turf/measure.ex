@@ -105,6 +105,33 @@ defmodule Geo.Turf.Measure do
   end
   defp select_upper(coords, index), do: Enum.at(coords, index + 2)
 
+
+  # TODO: Add final bearing option
+  @spec bearing(Geo.Point.t(), Geo.Point.t()) :: float()
+  @doc """
+  Takes two points and finds the geographic bearing between them,
+  i.e. the angle measured in degrees from the north line (0 degrees)
+
+  ## Examples
+      iex> point1 = %Geo.Point{coordinates: {-75.343, 39.984}}
+      ...> point2 = %Geo.Point{coordinates: {-75.534, 39.123}}
+      ...> Geo.Turf.Measure.bearing(point1, point2)
+      ...>  |> Geo.Turf.Math.rounded(2)
+      -170.23
+  """
+  def bearing(%Geo.Point{coordinates: {x1, y1}}, %Geo.Point{coordinates: {x2, y2}}) do
+    lon1 = Math.degrees_to_radians(x1)
+    lon2 = Math.degrees_to_radians(x2)
+    lat1 = Math.degrees_to_radians(y1)
+    lat2 = Math.degrees_to_radians(y2)
+
+    a = :math.sin(lon2 - lon1) * :math.cos(lat2)
+    b = :math.cos(lat1) * :math.sin(lat2) -
+      :math.sin(lat1) * :math.cos(lat2) * :math.cos(lon2 - lon1)
+
+    Math.radians_to_degrees(:math.atan2(a, b));
+  end
+
   @doc """
   Find the center of a `Geo.geometry()` item and give us a `Geo.Point`
 

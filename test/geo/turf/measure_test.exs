@@ -2,6 +2,7 @@ defmodule Geo.Test.MeasureTest do
   use ExUnit.Case
   use Fixate.Case
   alias Geo.Turf.Measure, as: M
+  alias Geo.Turf.Math, as: Math
   doctest Geo.Turf.Measure
 
   @fixture dcline: "along/dc-line.geojson"
@@ -17,8 +18,14 @@ defmodule Geo.Test.MeasureTest do
 
   @fixture geometry: "area/polygon.geojson"
   test "Area", ctx do
-    expected = 7748891609977
-    assert M.area(ctx.geometry) |> round() == expected
+    assert M.area(ctx.geometry) |> round() == 7748891609977
+  end
+
+  test "Bearing" do
+    start_point = %Geo.Point{coordinates: {-75.0, 45.0}}
+    end_point = %Geo.Point{coordinates: {20.0, 60.0}}
+
+    assert M.bearing(start_point, end_point) |> Math.rounded(2) == 37.75
   end
 
   test "Center" do
@@ -50,6 +57,5 @@ defmodule Geo.Test.MeasureTest do
     assert M.length_of(ctx.route1, :feet) == 1068691.81
     assert M.length_of(ctx.polygon, :feet) == 18363.92
   end
-
 
 end
