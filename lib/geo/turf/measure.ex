@@ -48,9 +48,8 @@ defmodule Geo.Turf.Measure do
   Takes a feature or collection and returns their area in square meters.
 
   ## Examples
-      iex> Geo.Turf.Measure.area(%Geo.Polygon{
-      ...>  coordinates: [[{125, -15}, {113, -22}, {154, -27}, {144, -15}, {125, -15}]]
-      ...> })
+      iex> %Geo.Polygon{coordinates: [[{125, -15}, {113, -22}, {154, -27}, {144, -15}, {125, -15}]]}
+      ...>   |> Geo.Turf.Measure.area()
       3332484969239.2676
   """
   def area(%Geo.GeometryCollection{geometries: geometries}) do
