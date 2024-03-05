@@ -15,6 +15,12 @@ defmodule Geo.Test.MeasureTest do
     assert M.along(ctx.dcline, 1, :miles) == M.along(ctx.dcline, 1.6, :kilometers)
   end
 
+  @fixture geometry: "area/polygon.geojson"
+  test "Area", ctx do
+    expected = 7748891609977
+    assert M.area(ctx.geometry) |> round() == expected
+  end
+
   test "Center" do
     box = %Geo.Polygon{coordinates: [{0,0}, {0,10}, {10,10}, {10,0}]}
     floating_box = %Geo.Polygon{coordinates: [{0.0,0.0}, {0.0,10.0}, {10.0,10.0}, {10.0,0.0}]}

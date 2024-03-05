@@ -43,6 +43,69 @@ defmodule Geo.Turf.Measure do
     along(line, length_of(line) / 2)
   end
 
+  @spec area(Geo.geometry()) :: number()
+  @doc """
+  Takes a feature or collection and returns their area in square meters.
+
+  ## Examples
+      iex> Geo.Turf.Measure.area(%Geo.Polygon{
+      ...>  coordinates: [[{125, -15}, {113, -22}, {154, -27}, {144, -15}, {125, -15}]]
+      ...> })
+      3332484969239.2676
+  """
+  def area(%Geo.GeometryCollection{geometries: geometries}) do
+    geometries
+      |> Enum.map(&area/1)
+      |> Enum.sum()
+  end
+  def area(%Geo.Polygon{coordinates: coords}), do: polygon_area(coords)
+  def area(%Geo.MultiPolygon{coordinates: coords}) do
+    coords
+      |> Enum.map(&polygon_area/1)
+      |> Enum.sum()
+  end
+  def area(%Geo.Point{}), do: 0
+  def area(%Geo.MultiPoint{}), do: 0
+  def area(%Geo.LineString{}), do: 0
+  def area(%Geo.MultiLineString{}), do: 0
+
+  defp polygon_area(coords) when length(coords) == 0, do: 0
+  defp polygon_area(coords) do
+    coords_area = coords
+      |> Enum.map(&ring_area/1)
+    hd(coords_area) - Enum.sum(tl(coords_area))
+  end
+
+  defp ring_area(coords) when length(coords) <= 2, do: 0
+  defp ring_area(coords) do
+    factor = (Math.earth_radius() * Math.earth_radius()) / 2;
+    abs(ring_area(coords, 0, 0) * factor)
+  end
+
+  # We should propably be a bit more efficient
+  defp ring_area(coords, index, acc) when index >= length(coords), do: acc
+  defp ring_area(coords, index, acc) do
+    pi_over_180 = :math.pi() / 180
+    {lower_x, _} = Enum.at(coords, index)
+    {_, middle_y} = select_middle(coords, index)
+    {upper_x, _} = select_upper(coords, index)
+
+    lower_x = lower_x * pi_over_180
+    middle_y = middle_y * pi_over_180
+    upper_x = upper_x * pi_over_180
+
+    total = acc + ((upper_x - lower_x) * :math.sin(middle_y))
+    ring_area(coords, index + 1, total)
+  end
+
+  defp select_middle(coords, index) when length(coords) == index + 1, do: Enum.at(coords, 0)
+  defp select_middle(coords, index), do: Enum.at(coords, index + 1)
+
+  defp select_upper(coords, index) when length(coords) <= index + 2 do
+    Enum.at(coords, Math.mod(index + 2, length(coords)))
+  end
+  defp select_upper(coords, index), do: Enum.at(coords, index + 2)
+
   @doc """
   Find the center of a `Geo.geometry()` item and give us a `Geo.Point`
 
