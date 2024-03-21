@@ -6,10 +6,10 @@ defmodule Geo.Turf.Transformation do
   alias Geo.Turf.Math
   alias Geo.Turf.Measure
 
-  @type unit :: {:unit, Math.length_unit()}
+  @type units :: {:unit, Math.length_unit()}
   @type steps :: {:steps, non_neg_integer()}
 
-  @type circle_options :: [unit() | steps()]
+  @type circle_options :: [units() | steps()]
 
   @doc """
   Create a circle polygon from a given center and radius.
@@ -22,7 +22,7 @@ defmodule Geo.Turf.Transformation do
   * `opts` - a keyword list of options
 
   ## Options
-  * `:unit` - the unit of the radius, defaults to `:kilometers`. see `Geo.Turf.Math.length_unit/0`
+  * `:units` - the unit of the radius, defaults to `:kilometers`. see `Geo.Turf.Math.length_unit/0`
   * `:steps` - the number of steps to use to create the circle, defaults to `64`
     * `steps` must be a positive integer or an `ArgumentError` will be raised
     * Note the higher the number of steps, the smoother the circle will be, but the more points it will have
@@ -31,7 +31,7 @@ defmodule Geo.Turf.Transformation do
           Geo.Polygon.t()
   def circle(%Geo.Point{coordinates: a} = center, radius, opts \\ [])
       when radius > 0 and is_tuple(a) do
-    unit = Keyword.get(opts, :unit, :kilometers)
+    units = Keyword.get(opts, :units, :kilometers)
 
     steps =
       case Keyword.get(opts, :steps, 64) do
@@ -41,7 +41,7 @@ defmodule Geo.Turf.Transformation do
 
     coordinates =
       0..(steps - 1)
-      |> Enum.map(&Measure.destination(center, radius, &1 * -360 / steps, unit: unit).coordinates)
+      |> Enum.map(&Measure.destination(center, radius, &1 * -360 / steps, units: units).coordinates)
       |> then(&(&1 ++ [hd(&1)]))
 
     %Geo.Polygon{coordinates: [coordinates]}

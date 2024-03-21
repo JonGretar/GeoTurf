@@ -50,11 +50,11 @@ defmodule Geo.Test.MeasureTest do
   test "destination", ctx do
     start_point = %Geo.Point{coordinates: {-75.0, 39.0}}
 
-    assert M.destination(start_point, 100, 180, unit: :kilometers) == %Geo.Point{
+    assert M.destination(start_point, 100, 180, units: :kilometers) == %Geo.Point{
              coordinates: {-75.00000000000001, 38.10067963627546}
            }
 
-    assert M.destination(start_point, 100, 180, unit: :miles) == %Geo.Point{
+    assert M.destination(start_point, 100, 180, units: :miles) == %Geo.Point{
              coordinates: {-75.00000000000001, 37.552684168562095}
            }
   end

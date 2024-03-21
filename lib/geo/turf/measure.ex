@@ -5,7 +5,7 @@ defmodule Geo.Turf.Measure do
   import Geo.Turf.Helpers, only: [bbox: 1, flatten_coords: 1]
   alias Geo.Turf.Math
 
-  @type unit :: {:unit, Math.length_unit()}
+  @type units :: {:units, Math.length_unit()}
 
   @doc """
   Takes a LineString and returns a Point at a specified distance along the line.
@@ -258,7 +258,7 @@ defmodule Geo.Turf.Measure do
   * `opts` - a keyword list of options
 
   ## Options
-  * `:unit` - the unit of the distance, defaults to `:kilometers`
+  * `:units` - the unit of the distance, defaults to `:kilometers`
 
   ## Examples
 
@@ -270,16 +270,16 @@ defmodule Geo.Turf.Measure do
           origin :: Geo.Point.t(),
           distance :: number(),
           bearing :: number(),
-          options :: [unit()]
+          options :: [units()]
         ) :: Geo.Point.t()
   def destination(%Geo.Point{coordinates: {x, y}}, distance, bearing, opts \\ []) do
-    unit = Keyword.get(opts, :unit, :kilometers)
+    units = Keyword.get(opts, :units, :kilometers)
 
     lat1 = Math.degrees_to_radians(y)
     lon1 = Math.degrees_to_radians(x)
 
     angular_bearing = Math.degrees_to_radians(bearing)
-    angular_distance = Math.length_to_radians(distance, unit)
+    angular_distance = Math.length_to_radians(distance, units)
 
     lat2 =
       :math.asin(
