@@ -5,7 +5,7 @@ defmodule Geo.Turf.MixProject do
     [
       app: :geo_turf,
       version: "0.2.0",
-      elixir: "~> 1.6",
+      elixir: "~> 1.15",
       # start_permanent: Mix.env() == :prod,
       description: description(),
       package: package(),
