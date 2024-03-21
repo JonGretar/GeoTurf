@@ -28,5 +28,4 @@ defmodule Geo.Turf do
 
   @type coordinates :: {Number.t(), Number.t()}
   @type point :: Geo.Point.t() | coordinates()
-
 end
