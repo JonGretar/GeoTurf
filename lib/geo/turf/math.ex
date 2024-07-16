@@ -45,8 +45,8 @@ defmodule Geo.Turf.Math do
   }
   @area_factors %{
     acres: 0.000247105,
-    centimeters: 10000,
-    centimetres: 10000,
+    centimeters: 10_000,
+    centimetres: 10_000,
     feet: 10.763910417,
     inches: 1550.003100006,
     kilometers: 0.000001,

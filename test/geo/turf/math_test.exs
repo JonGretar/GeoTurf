@@ -68,7 +68,7 @@ defmodule Geo.Turf.Math.Test do
     assert M.convert_area(1000) == 0.001
     assert M.convert_area(1, :kilometres, :miles) == 0.386
     assert M.convert_area(1, :miles, :kilometers) == 2.5906735751295336
-    assert M.convert_area(1, :meters, :centimetres) == 10000
+    assert M.convert_area(1, :meters, :centimetres) == 10_000
     assert M.convert_area(100, :metres, :acres) == 0.0247105
     assert M.convert_area(100, :metres, :feet) == 1076.3910417
   end

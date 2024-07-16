@@ -74,7 +74,7 @@ defmodule Geo.Turf.Measure do
   def area(%Geo.LineString{}), do: 0
   def area(%Geo.MultiLineString{}), do: 0
 
-  defp polygon_area(coords) when length(coords) == 0, do: 0
+  defp polygon_area(coords) when Enum.empty?(coords) == 0, do: 0
 
   defp polygon_area(coords) do
     coords_area =
