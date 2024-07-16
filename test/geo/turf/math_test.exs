@@ -4,22 +4,22 @@ defmodule Geo.Turf.Math.Test do
   doctest Geo.Turf.Math
 
   test "factors" do
-    assert M.earth_radius == 6371008.8
-    assert M.factor(:kilometers) ==  6371.0088
+    assert M.earth_radius() == 6_371_008.8
+    assert M.factor(:kilometers) == 6371.0088
     assert M.units_factors(:kilometers) == 1.0e-3
     assert M.area_factors(:kilometers) == 1.0e-6
   end
 
   test "radiansToLength" do
     assert M.radians_to_length(1, :radians) == 1
-    assert M.radians_to_length(1, :kilometers) == M.earth_radius / 1000
-    assert M.radians_to_length(1, :miles) == M.earth_radius / 1609.344
+    assert M.radians_to_length(1, :kilometers) == M.earth_radius() / 1000
+    assert M.radians_to_length(1, :miles) == M.earth_radius() / 1609.344
   end
 
   test "lengthToRadians" do
     assert M.length_to_radians(1, :radians) == 1
-    assert M.length_to_radians(M.earth_radius / 1000, :kilometers) == 1
-    assert M.length_to_radians(M.earth_radius / 1609.344, :miles) == 1
+    assert M.length_to_radians(M.earth_radius() / 1000, :kilometers) == 1
+    assert M.length_to_radians(M.earth_radius() / 1609.344, :miles) == 1
   end
 
   test "lengthToDegrees" do
@@ -29,15 +29,15 @@ defmodule Geo.Turf.Math.Test do
   end
 
   test "radiansToDegrees" do
-    assert M.rounded(M.radians_to_degrees(:math.pi / 3), 6) == 60
-    assert M.radians_to_degrees(3.5 * :math.pi) == 270
-    assert M.radians_to_degrees(-(:math.pi)) == -180
+    assert M.rounded(M.radians_to_degrees(:math.pi() / 3), 6) == 60
+    assert M.radians_to_degrees(3.5 * :math.pi()) == 270
+    assert M.radians_to_degrees(-:math.pi()) == -180
   end
 
   test "degreesToRadians" do
-    assert M.degrees_to_radians(60) == :math.pi / 3
-    assert M.degrees_to_radians(270) == 1.5 * :math.pi
-    assert M.degrees_to_radians(-180) == -(:math.pi)
+    assert M.degrees_to_radians(60) == :math.pi() / 3
+    assert M.degrees_to_radians(270) == 1.5 * :math.pi()
+    assert M.degrees_to_radians(-180) == -:math.pi()
   end
 
   test "bearingToAzimuth" do
@@ -79,7 +79,4 @@ defmodule Geo.Turf.Math.Test do
     assert M.mod(10, 3) == 1.0
     assert M.mod(10.0, 4) == 2.0
   end
-
-
-
 end

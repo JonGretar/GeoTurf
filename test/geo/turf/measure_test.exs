@@ -18,7 +18,7 @@ defmodule Geo.Test.MeasureTest do
 
   @fixture geometry: "area/polygon.geojson"
   test "Area", ctx do
-    assert M.area(ctx.geometry) |> round() == 7748891609977
+    assert M.area(ctx.geometry) |> round() == 7_748_891_609_977
   end
 
   test "Bearing" do
@@ -29,10 +29,10 @@ defmodule Geo.Test.MeasureTest do
   end
 
   test "Center" do
-    box = %Geo.Polygon{coordinates: [{0,0}, {0,10}, {10,10}, {10,0}]}
-    floating_box = %Geo.Polygon{coordinates: [{0.0,0.0}, {0.0,10.0}, {10.0,10.0}, {10.0,0.0}]}
-    assert Geo.Turf.Measure.center(box) == %Geo.Point{ coordinates: {5, 5} }
-    assert Geo.Turf.Measure.center(floating_box) == %Geo.Point{ coordinates: {5.0, 5.0} }
+    box = %Geo.Polygon{coordinates: [{0, 0}, {0, 10}, {10, 10}, {10, 0}]}
+    floating_box = %Geo.Polygon{coordinates: [{0.0, 0.0}, {0.0, 10.0}, {10.0, 10.0}, {10.0, 0.0}]}
+    assert Geo.Turf.Measure.center(box) == %Geo.Point{coordinates: {5, 5}}
+    assert Geo.Turf.Measure.center(floating_box) == %Geo.Point{coordinates: {5.0, 5.0}}
   end
 
   @fixture points: "distance/points.geojson"
@@ -54,8 +54,7 @@ defmodule Geo.Test.MeasureTest do
     assert M.length_of(ctx.hike) == 3.05
     assert M.length_of(ctx.hike, :miles) == 1.90
     assert M.length_of(ctx.hike, :feet) == 10007.75
-    assert M.length_of(ctx.route1, :feet) == 1068691.81
+    assert M.length_of(ctx.route1, :feet) == 1_068_691.81
     assert M.length_of(ctx.polygon, :feet) == 18363.92
   end
-
 end

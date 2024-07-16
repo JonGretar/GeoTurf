@@ -4,10 +4,10 @@ defmodule Geo.Turf.Helpers.Test do
   use Fixate.Case
   doctest Geo.Turf.Helpers
 
-  @square %Geo.Polygon{coordinates: [[{0,0}, {0,10}, {10,10}, {10,0}]]}
-  @square_float %Geo.Polygon{coordinates: [[{0.0,0.0}, {0.0,10.0}, {10.0,10.0}, {10.0,0.0}]]}
-  @triangle %Geo.Polygon{coordinates: [[{-10,10}, {0,0}, {10,10}]]}
-  @triangle_float %Geo.Polygon{coordinates: [[{-10,10}, {0,0}, {10,10}]]}
+  @square %Geo.Polygon{coordinates: [[{0, 0}, {0, 10}, {10, 10}, {10, 0}]]}
+  @square_float %Geo.Polygon{coordinates: [[{0.0, 0.0}, {0.0, 10.0}, {10.0, 10.0}, {10.0, 0.0}]]}
+  @triangle %Geo.Polygon{coordinates: [[{-10, 10}, {0, 0}, {10, 10}]]}
+  @triangle_float %Geo.Polygon{coordinates: [[{-10, 10}, {0, 0}, {10, 10}]]}
   @collection %Geo.GeometryCollection{geometries: [@square, @triangle]}
 
   test "Bounding Box" do
@@ -17,9 +17,17 @@ defmodule Geo.Turf.Helpers.Test do
   end
 
   test "Flatten Coordinates" do
-    assert H.flatten_coords(@triangle) == [{-10,10}, {0,0}, {10,10}]
-    assert H.flatten_coords(@triangle_float) == [{-10.0,10.0}, {0.0,0.0}, {10.0,10.0}]
-    assert H.flatten_coords(@collection) == [{0,0}, {0,10}, {10,10}, {10,0}, {-10,10}, {0,0}, {10,10}]
-  end
+    assert H.flatten_coords(@triangle) == [{-10, 10}, {0, 0}, {10, 10}]
+    assert H.flatten_coords(@triangle_float) == [{-10.0, 10.0}, {0.0, 0.0}, {10.0, 10.0}]
 
+    assert H.flatten_coords(@collection) == [
+             {0, 0},
+             {0, 10},
+             {10, 10},
+             {10, 0},
+             {-10, 10},
+             {0, 0},
+             {10, 10}
+           ]
+  end
 end

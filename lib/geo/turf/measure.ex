@@ -16,18 +16,21 @@ defmodule Geo.Turf.Measure do
       %Geo.Point{coordinates: {-23.629,64.766}}
   """
   def along(%Geo.LineString{coordinates: coords}, distance, unit \\ :kilometers)
-  when is_number(distance) do
+      when is_number(distance) do
     walk_along(coords, distance, unit, 0)
   end
-  defp walk_along([from, to| next], distance, unit, acc) when distance > acc do
+
+  defp walk_along([from, to | next], distance, unit, acc) when distance > acc do
     travel = get_distance(from, to, unit)
-    walk_along([to| next], distance, unit, acc+travel)
+    walk_along([to | next], distance, unit, acc + travel)
   end
-  defp walk_along([from| _next], distance, _unit, acc) when distance < acc do
+
+  defp walk_along([from | _next], distance, _unit, acc) when distance < acc do
     # TODO: overshot
     %Geo.Point{coordinates: from}
   end
-  defp walk_along([{x,y}], _distance, _unit, _acc), do: %Geo.Point{coordinates: {x,y}}
+
+  defp walk_along([{x, y}], _distance, _unit, _acc), do: %Geo.Point{coordinates: {x, y}}
   defp walk_along([], _distance, _unit, _acc), do: :error
 
   @doc """
@@ -54,35 +57,43 @@ defmodule Geo.Turf.Measure do
   """
   def area(%Geo.GeometryCollection{geometries: geometries}) do
     geometries
-      |> Enum.map(&area/1)
-      |> Enum.sum()
+    |> Enum.map(&area/1)
+    |> Enum.sum()
   end
+
   def area(%Geo.Polygon{coordinates: coords}), do: polygon_area(coords)
+
   def area(%Geo.MultiPolygon{coordinates: coords}) do
     coords
-      |> Enum.map(&polygon_area/1)
-      |> Enum.sum()
+    |> Enum.map(&polygon_area/1)
+    |> Enum.sum()
   end
+
   def area(%Geo.Point{}), do: 0
   def area(%Geo.MultiPoint{}), do: 0
   def area(%Geo.LineString{}), do: 0
   def area(%Geo.MultiLineString{}), do: 0
 
   defp polygon_area(coords) when length(coords) == 0, do: 0
+
   defp polygon_area(coords) do
-    coords_area = coords
+    coords_area =
+      coords
       |> Enum.map(&ring_area/1)
+
     hd(coords_area) - Enum.sum(tl(coords_area))
   end
 
   defp ring_area(coords) when length(coords) <= 2, do: 0
+
   defp ring_area(coords) do
-    factor = (Math.earth_radius() * Math.earth_radius()) / 2;
+    factor = Math.earth_radius() * Math.earth_radius() / 2
     abs(ring_area(coords, 0, 0) * factor)
   end
 
   # We should propably be a bit more efficient
   defp ring_area(coords, index, acc) when index >= length(coords), do: acc
+
   defp ring_area(coords, index, acc) do
     pi_over_180 = :math.pi() / 180
     {lower_x, _} = Enum.at(coords, index)
@@ -93,7 +104,7 @@ defmodule Geo.Turf.Measure do
     middle_y = middle_y * pi_over_180
     upper_x = upper_x * pi_over_180
 
-    total = acc + ((upper_x - lower_x) * :math.sin(middle_y))
+    total = acc + (upper_x - lower_x) * :math.sin(middle_y)
     ring_area(coords, index + 1, total)
   end
 
@@ -103,8 +114,8 @@ defmodule Geo.Turf.Measure do
   defp select_upper(coords, index) when length(coords) <= index + 2 do
     Enum.at(coords, Math.mod(index + 2, length(coords)))
   end
-  defp select_upper(coords, index), do: Enum.at(coords, index + 2)
 
+  defp select_upper(coords, index), do: Enum.at(coords, index + 2)
 
   # TODO: Add final bearing option
   @spec bearing(Geo.Point.t(), Geo.Point.t()) :: float()
@@ -126,10 +137,12 @@ defmodule Geo.Turf.Measure do
     lat2 = Math.degrees_to_radians(y2)
 
     a = :math.sin(lon2 - lon1) * :math.cos(lat2)
-    b = :math.cos(lat1) * :math.sin(lat2) -
-      :math.sin(lat1) * :math.cos(lat2) * :math.cos(lon2 - lon1)
 
-    Math.radians_to_degrees(:math.atan2(a, b));
+    b =
+      :math.cos(lat1) * :math.sin(lat2) -
+        :math.sin(lat1) * :math.cos(lat2) * :math.cos(lon2 - lon1)
+
+    Math.radians_to_degrees(:math.atan2(a, b))
   end
 
   @doc """
@@ -143,16 +156,21 @@ defmodule Geo.Turf.Measure do
   """
   def center(geometry) when is_map(geometry) do
     {min_x, min_y, max_x, max_y} = bbox(geometry)
-    if (is_integer(min_x) && is_integer(min_y) && is_integer(max_x) && is_integer(max_y)) do
-      %Geo.Point{ coordinates: {
-        round((min_x + max_x) / 2),
-        round((min_y + max_y) / 2)
-      } }
+
+    if is_integer(min_x) && is_integer(min_y) && is_integer(max_x) && is_integer(max_y) do
+      %Geo.Point{
+        coordinates: {
+          round((min_x + max_x) / 2),
+          round((min_y + max_y) / 2)
+        }
+      }
     else
-      %Geo.Point{ coordinates: {
-        (min_x + max_x) / 2,
-        (min_y + max_y) / 2
-      } }
+      %Geo.Point{
+        coordinates: {
+          (min_x + max_x) / 2,
+          (min_y + max_y) / 2
+        }
+      }
     end
   end
 
@@ -192,15 +210,20 @@ defmodule Geo.Turf.Measure do
   end
 
   defp get_distance(from, to, unit)
-  defp get_distance(%Geo.Point{coordinates: a}, %Geo.Point{coordinates: b}, unit), do: distance(a, b, unit)
-  defp get_distance({x1, y1}, {x2, y2}, unit) do
-    d_lat = Math.degrees_to_radians((y2 - y1));
-    d_lon = Math.degrees_to_radians((x2 - x1));
-    lat1 = Math.degrees_to_radians(y1);
-    lat2 = Math.degrees_to_radians(y2);
 
-    a = :math.pow(:math.sin(d_lat / 2), 2) +
-      :math.pow(:math.sin(d_lon / 2), 2) * :math.cos(lat1) * :math.cos(lat2)
+  defp get_distance(%Geo.Point{coordinates: a}, %Geo.Point{coordinates: b}, unit),
+    do: distance(a, b, unit)
+
+  defp get_distance({x1, y1}, {x2, y2}, unit) do
+    d_lat = Math.degrees_to_radians(y2 - y1)
+    d_lon = Math.degrees_to_radians(x2 - x1)
+    lat1 = Math.degrees_to_radians(y1)
+    lat2 = Math.degrees_to_radians(y2)
+
+    a =
+      :math.pow(:math.sin(d_lat / 2), 2) +
+        :math.pow(:math.sin(d_lon / 2), 2) * :math.cos(lat1) * :math.cos(lat2)
+
     Math.radians_to_length(2 * :math.atan2(:math.sqrt(a), :math.sqrt(1 - a)), unit)
   end
 
@@ -220,12 +243,11 @@ defmodule Geo.Turf.Measure do
     |> Math.rounded(2)
   end
 
-  defp walk_length([from, to| next], unit, acc) do
+  defp walk_length([from, to | next], unit, acc) do
     travel = get_distance(from, to, unit)
-    walk_length([to| next], unit, acc+travel)
+    walk_length([to | next], unit, acc + travel)
   end
-  defp walk_length([{_,_}], _unit, acc), do: acc
+
+  defp walk_length([{_, _}], _unit, acc), do: acc
   defp walk_length([], _unit, acc), do: acc
-
-
 end
