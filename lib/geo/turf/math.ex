@@ -73,7 +73,7 @@ defmodule Geo.Turf.Math do
   def area_factors(factor), do: @area_factors[factor]
 
   @doc false
-  @spec earth_radius() :: Number.t
+  @spec earth_radius() :: number()
   def earth_radius(), do: @earth_radius
 
 
@@ -160,7 +160,7 @@ defmodule Geo.Turf.Math do
       4.0
 
   """
-  @spec mod(Number.t(), Number.t()) :: Number.t()
+  @spec mod(number(), number()) :: number()
 
   def mod(number, modulus) when number < 0, do: -mod(abs(number), modulus)
   def mod(number, modulus) when is_float(number) and is_number(modulus) do
