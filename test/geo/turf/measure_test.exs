@@ -40,7 +40,7 @@ defmodule Geo.Test.MeasureTest do
     [start, finish] = ctx.points
     assert M.distance(start, finish) == 97.13
     assert M.distance(start, finish, :kilometers) == 97.13
-    assert M.distance(start, finish, :meters) == 97129.22
+    assert M.distance(start, finish, :meters) == 97_129.22
     assert M.distance(start, finish, :miles) == 60.35
     assert M.distance(start, finish, :nauticalmiles) == 52.45
     assert M.distance(start, finish, :radians) == 0.02

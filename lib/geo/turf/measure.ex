@@ -245,6 +245,7 @@ defmodule Geo.Turf.Measure do
     |> Math.rounded(2)
   end
 
+
   @doc """
   Takes in an **origin** `%Geo.Point{}` and calculates the destination of a new `%Geo.Point{}` at a given distance and bearing away from the **origin** point.
 

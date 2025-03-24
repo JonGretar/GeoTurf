@@ -45,8 +45,8 @@ defmodule Geo.Turf.Math do
   }
   @area_factors %{
     acres: 0.000247105,
-    centimeters: 10000,
-    centimetres: 10000,
+    centimeters: 10_000,
+    centimetres: 10_000,
     feet: 10.763910417,
     inches: 1550.003100006,
     kilometers: 0.000001,
@@ -74,6 +74,7 @@ defmodule Geo.Turf.Math do
 
   @doc false
   @spec earth_radius() :: Number.t()
+
   def earth_radius(), do: @earth_radius
 
   @spec radians_to_length(number(), length_unit) :: number()
@@ -161,7 +162,7 @@ defmodule Geo.Turf.Math do
       4.0
 
   """
-  @spec mod(Number.t(), Number.t()) :: Number.t()
+  @spec mod(number(), number()) :: number()
 
   def mod(number, modulus) when number < 0, do: -mod(abs(number), modulus)
 

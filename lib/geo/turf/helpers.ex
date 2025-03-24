@@ -19,6 +19,7 @@ defmodule Geo.Turf.Helpers do
       {1,1,3,3}
 
   """
+
   @spec bbox([{Number.t(), Number.t()}] | Geo.geometry()) ::
           {Number.t(), Number.t(), Number.t(), Number.t()}
   def bbox(geometries) when is_map(geometries) do

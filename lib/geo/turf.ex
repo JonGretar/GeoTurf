@@ -26,6 +26,6 @@ defmodule Geo.Turf do
   If there are functions you need from [TurfJS](http://turfjs.org/) or just things you thought of please just make an issue for it. Including a test for it would be great.
   """
 
-  @type coordinates :: {Number.t(), Number.t()}
+  @type coordinates :: {number(), number()}
   @type point :: Geo.Point.t() | coordinates()
 end

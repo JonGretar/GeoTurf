@@ -42,6 +42,7 @@ defmodule Geo.Turf.MixProject do
       {:ex_doc, "~> 0.30", only: :dev},
       {:jason, "~> 1.4", only: [:dev, :test]},
       {:excoveralls, "~> 0.18", only: :test},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:fixate, "~> 0.1", only: :test}
     ]
   end
