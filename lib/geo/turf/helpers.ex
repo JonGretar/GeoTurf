@@ -19,7 +19,9 @@ defmodule Geo.Turf.Helpers do
       {1,1,3,3}
 
   """
-  @spec bbox([{number(), number()}] | Geo.geometry()) :: {number(), number(), number(), number()}
+
+  @spec bbox([{Number.t(), Number.t()}] | Geo.geometry()) ::
+          {Number.t(), Number.t(), Number.t(), Number.t()}
   def bbox(geometries) when is_map(geometries) do
     flatten_coords(geometries)
     |> List.foldl(@min_bounds, &bbox_folder/2)
@@ -50,7 +52,7 @@ defmodule Geo.Turf.Helpers do
       [{1,1}, {2,2}]
 
   """
-  @spec flatten_coords(Geo.geometry()) :: [{number(), number()}]
+  @spec flatten_coords(Geo.geometry()) :: [{Number.t(), Number.t()}]
   def flatten_coords(geometry), do: flatten_coords(geometry, [])
   defp flatten_coords(%Geo.Point{coordinates: coords}, acc), do: acc ++ [coords]
   defp flatten_coords(%Geo.MultiPoint{coordinates: coords}, acc), do: acc ++ List.flatten(coords)

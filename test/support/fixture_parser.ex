@@ -1,5 +1,6 @@
 defmodule FixtureParser do
   @moduledoc false
+
   def parse_geojson(data) when is_binary(data) do
     data
     |> Jason.decode!()

@@ -47,14 +47,26 @@ defmodule Geo.Test.MeasureTest do
     assert M.distance(start, finish, :degrees) == 0.87
   end
 
+  test "destination", ctx do
+    start_point = %Geo.Point{coordinates: {-75.0, 39.0}}
+
+    assert M.destination(start_point, 100, 180, units: :kilometers) == %Geo.Point{
+             coordinates: {-75.00000000000001, 38.10067963627546}
+           }
+
+    assert M.destination(start_point, 100, 180, units: :miles) == %Geo.Point{
+             coordinates: {-75.00000000000001, 37.552684168562095}
+           }
+  end
+
   @fixture "length/polygon.geojson"
   @fixture "length/route1.geojson"
   @fixture "length/hike.geojson"
   test "Length", ctx do
     assert M.length_of(ctx.hike) == 3.05
     assert M.length_of(ctx.hike, :miles) == 1.90
-    assert M.length_of(ctx.hike, :feet) == 10_007.75
+    assert M.length_of(ctx.hike, :feet) == 10007.75
     assert M.length_of(ctx.route1, :feet) == 1_068_691.81
-    assert M.length_of(ctx.polygon, :feet) == 18_363.92
+    assert M.length_of(ctx.polygon, :feet) == 18363.92
   end
 end

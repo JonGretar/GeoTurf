@@ -5,6 +5,8 @@ defmodule Geo.Turf.Measure do
   import Geo.Turf.Helpers, only: [bbox: 1, flatten_coords: 1]
   alias Geo.Turf.Math
 
+  @type units :: {:units, Math.length_unit()}
+
   @doc """
   Takes a LineString and returns a Point at a specified distance along the line.
   Note that this will aproximate location to the nearest coordinate point.
@@ -74,7 +76,7 @@ defmodule Geo.Turf.Measure do
   def area(%Geo.LineString{}), do: 0
   def area(%Geo.MultiLineString{}), do: 0
 
-  defp polygon_area(coords) when Enum.empty?(coords) == 0, do: 0
+  defp polygon_area(coords) when length(coords) == 0, do: 0
 
   defp polygon_area(coords) do
     coords_area =
@@ -241,6 +243,64 @@ defmodule Geo.Turf.Measure do
     |> flatten_coords()
     |> walk_length(unit, 0)
     |> Math.rounded(2)
+  end
+
+
+  @doc """
+  Takes in an **origin** `%Geo.Point{}` and calculates the destination of a new `%Geo.Point{}` at a given distance and bearing away from the **origin** point.
+
+  This uses the [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula) to account for global curvature.
+  See the `turf.destination` [documentation](http://turfjs.org/docs/#destination) for more information.
+
+  ## Parameters
+  * `origin` - the origin point
+  * `distance` - the distance from the origin point to the destination point
+  * `bearing` - the angle from the origin point to the destination point
+  * `opts` - a keyword list of options
+
+  ## Options
+  * `:units` - the unit of the distance, defaults to `:kilometers`
+
+  ## Examples
+
+      iex> %Geo.Point{coordinates: {-75.343, 39.984}}
+      ...>   |> Geo.Turf.Measure.destination(100, 180, unit: :kilometers)
+      %Geo.Point{coordinates: {-75.343, 39.08467963627546}}
+  """
+  @spec destination(
+          origin :: Geo.Point.t(),
+          distance :: number(),
+          bearing :: number(),
+          options :: [units()]
+        ) :: Geo.Point.t()
+  def destination(%Geo.Point{coordinates: {x, y}}, distance, bearing, opts \\ []) do
+    units = Keyword.get(opts, :units, :kilometers)
+
+    lat1 = Math.degrees_to_radians(y)
+    lon1 = Math.degrees_to_radians(x)
+
+    angular_bearing = Math.degrees_to_radians(bearing)
+    angular_distance = Math.length_to_radians(distance, units)
+
+    lat2 =
+      :math.asin(
+        :math.sin(lat1) * :math.cos(angular_distance) +
+          :math.cos(lat1) * :math.sin(angular_distance) * :math.cos(angular_bearing)
+      )
+
+    lon2 =
+      lon1 +
+        :math.atan2(
+          :math.sin(angular_bearing) * :math.sin(angular_distance) * :math.cos(lat1),
+          :math.cos(angular_distance) - :math.sin(lat1) * :math.sin(lat2)
+        )
+
+    %Geo.Point{
+      coordinates: {
+        Math.radians_to_degrees(lon2),
+        Math.radians_to_degrees(lat2)
+      }
+    }
   end
 
   defp walk_length([from, to | next], unit, acc) do
