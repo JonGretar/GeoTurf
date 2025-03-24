@@ -76,7 +76,7 @@ defmodule Geo.Turf.Measure do
   def area(%Geo.LineString{}), do: 0
   def area(%Geo.MultiLineString{}), do: 0
 
-  defp polygon_area(coords) when length(coords) == 0, do: 0
+  defp polygon_area(coords) when coords == [], do: 0
 
   defp polygon_area(coords) do
     coords_area =
@@ -244,7 +244,6 @@ defmodule Geo.Turf.Measure do
     |> walk_length(unit, 0)
     |> Math.rounded(2)
   end
-
 
   @doc """
   Takes in an **origin** `%Geo.Point{}` and calculates the destination of a new `%Geo.Point{}` at a given distance and bearing away from the **origin** point.
