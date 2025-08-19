@@ -4,7 +4,7 @@ defmodule Geo.Turf.MixProject do
   def project do
     [
       app: :geo_turf,
-      version: "0.3.0",
+      version: "0.3.1",
       elixir: "~> 1.6",
       # start_permanent: Mix.env() == :prod,
       description: description(),
@@ -38,7 +38,7 @@ defmodule Geo.Turf.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:geo, "~> 3.5"},
+      {:geo, "~> 4.0 or ~> 3.5.0"},
       {:ex_doc, "~> 0.30", only: :dev},
       {:jason, "~> 1.4", only: [:dev, :test]},
       {:excoveralls, "~> 0.18", only: :test},
