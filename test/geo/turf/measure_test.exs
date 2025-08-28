@@ -47,7 +47,7 @@ defmodule Geo.Test.MeasureTest do
     assert M.distance(start, finish, :degrees) == 0.87
   end
 
-  test "destination", ctx do
+  test "destination", _ctx do
     start_point = %Geo.Point{coordinates: {-75.0, 39.0}}
 
     assert M.destination(start_point, 100, 180, units: :kilometers) == %Geo.Point{
