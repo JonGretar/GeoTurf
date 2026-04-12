@@ -149,6 +149,49 @@ defmodule Geo.Turf.Measure do
     Math.radians_to_degrees(:math.atan2(a, b))
   end
 
+  @spec centroid(Geo.geometry()) :: Geo.Point.t()
+  @doc """
+  Computes the centroid of a geometry as the mean position of all vertices.
+  Closed polygon rings have their repeated closing vertex excluded, matching
+  the behaviour of `turf.centroid`.
+
+  ## Examples
+
+      iex> Geo.Turf.Measure.centroid(%Geo.Polygon{coordinates: [[{-81, 41}, {-88, 36}, {-84, 31}, {-80, 33}, {-77, 39}, {-81, 41}]]})
+      %Geo.Point{coordinates: {-82.0, 36.0}}
+
+      iex> Geo.Turf.Measure.centroid(%Geo.LineString{coordinates: [{0, 0}, {4, 0}, {4, 4}]})
+      %Geo.Point{coordinates: {2.6666666666666665, 1.3333333333333333}}
+
+      iex> Geo.Turf.Measure.centroid(%Geo.Point{coordinates: {1.0, 2.0}})
+      %Geo.Point{coordinates: {1.0, 2.0}}
+
+  """
+  def centroid(geometry) do
+    coords = centroid_coords(geometry)
+    len = length(coords)
+    {sum_x, sum_y} = Enum.reduce(coords, {0, 0}, fn {x, y}, {sx, sy} -> {sx + x, sy + y} end)
+    %Geo.Point{coordinates: {sum_x / len, sum_y / len}}
+  end
+
+  defp centroid_coords(%Geo.Point{coordinates: coord}), do: [coord]
+  defp centroid_coords(%Geo.MultiPoint{coordinates: coords}), do: coords
+  defp centroid_coords(%Geo.LineString{coordinates: coords}), do: coords
+  defp centroid_coords(%Geo.MultiLineString{coordinates: lines}), do: Enum.concat(lines)
+
+  defp centroid_coords(%Geo.Polygon{coordinates: rings}),
+    do: Enum.flat_map(rings, &open_ring/1)
+
+  defp centroid_coords(%Geo.MultiPolygon{coordinates: polys}),
+    do: Enum.flat_map(polys, fn rings -> Enum.flat_map(rings, &open_ring/1) end)
+
+  defp centroid_coords(%Geo.GeometryCollection{geometries: geoms}),
+    do: Enum.flat_map(geoms, &centroid_coords/1)
+
+  defp open_ring([first | _] = ring) do
+    if List.last(ring) == first, do: Enum.drop(ring, -1), else: ring
+  end
+
   @spec center(Geo.geometry()) :: Geo.Point.t()
   @doc """
   Find the center of a `Geo.geometry()` item and give us a `Geo.Point`

@@ -59,6 +59,56 @@ defmodule Geo.Test.MeasureTest do
            }
   end
 
+  # ---------------------------------------------------------------------------
+  # centroid
+  # Mirrors: TurfJS "turf-centroid" fixture suite
+  # Expected coordinates taken from TurfJS test/out/*.geojson (first feature)
+  # ---------------------------------------------------------------------------
+
+  @fixture polygon: "centroid/polygon.geojson"
+  test "centroid of polygon matches TurfJS", ctx do
+    assert %Geo.Point{coordinates: {x, y}} = M.centroid(ctx.polygon)
+    assert_in_delta x, 4.841194152832031, 1.0e-10
+    assert_in_delta y, 45.75807143030368, 1.0e-10
+  end
+
+  @fixture imbalanced_polygon: "centroid/imbalanced_polygon.geojson"
+  test "centroid of imbalanced polygon matches TurfJS", ctx do
+    assert %Geo.Point{coordinates: {x, y}} = M.centroid(ctx.imbalanced_polygon)
+    assert_in_delta x, 4.851791984156558, 1.0e-10
+    assert_in_delta y, 45.78143055383553, 1.0e-10
+  end
+
+  @fixture linestring: "centroid/linestring.geojson"
+  test "centroid of linestring matches TurfJS", ctx do
+    assert %Geo.Point{coordinates: {x, y}} = M.centroid(ctx.linestring)
+    assert_in_delta x, 4.860076904296875, 1.0e-10
+    assert_in_delta y, 45.75919915723537, 1.0e-10
+  end
+
+  @fixture point: "centroid/point.geojson"
+  test "centroid of point returns the point itself", ctx do
+    assert %Geo.Point{coordinates: {x, y}} = M.centroid(ctx.point)
+    assert_in_delta x, 4.831961989402771, 1.0e-10
+    assert_in_delta y, 45.75764678012361, 1.0e-10
+  end
+
+  test "centroid of feature collection (4 points) matches TurfJS" do
+    # TurfJS test/in/feature-collection.geojson — 4 points, expected centroid:
+    # [4.8336222767829895, 45.76051644154402]
+    points = [
+      %Geo.Point{coordinates: {4.833351373672485, 45.760809294695534}},
+      %Geo.Point{coordinates: {4.8331475257873535, 45.760296567821456}},
+      %Geo.Point{coordinates: {4.833984374999999, 45.76073818687033}},
+      %Geo.Point{coordinates: {4.834005832672119, 45.76022171678877}}
+    ]
+
+    gc = %Geo.GeometryCollection{geometries: points}
+    assert %Geo.Point{coordinates: {x, y}} = M.centroid(gc)
+    assert_in_delta x, 4.8336222767829895, 1.0e-10
+    assert_in_delta y, 45.76051644154402, 1.0e-10
+  end
+
   @fixture "length/polygon.geojson"
   @fixture "length/route1.geojson"
   @fixture "length/hike.geojson"
