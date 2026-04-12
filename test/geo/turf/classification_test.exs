@@ -203,4 +203,33 @@ defmodule Geo.Turf.ClassificationTest do
     result = C.points_within_polygon(ctx.points, ctx.multipoly)
     assert length(result) == 4
   end
+
+  # ---------------------------------------------------------------------------
+  # nearest_point
+  # Mirrors: TurfJS "turf-nearest-point -- points"
+  # Target: [-75.4, 39.4], expected nearest: [-75.33, 39.44] (index 14)
+  # ---------------------------------------------------------------------------
+
+  @fixture points: "nearest_point/points.geojson"
+  test "nearest point from fixture matches TurfJS output", ctx do
+    target = %Geo.Point{coordinates: {-75.4, 39.4}}
+    assert %Geo.Point{coordinates: {-75.33, 39.44}} = C.nearest_point(target, ctx.points)
+  end
+
+  test "nearest_point returns nil for empty list" do
+    assert C.nearest_point(%Geo.Point{coordinates: {0, 0}}, []) == nil
+  end
+
+  test "nearest_point returns the only point in a singleton list" do
+    pt = %Geo.Point{coordinates: {10.0, 20.0}}
+    assert C.nearest_point(%Geo.Point{coordinates: {0, 0}}, [pt]) == pt
+  end
+
+  @fixture points: "nearest_point/points.geojson"
+  test "nearest_point respects units option — miles vs kilometers same winner", ctx do
+    target = %Geo.Point{coordinates: {-75.4, 39.4}}
+
+    assert C.nearest_point(target, ctx.points, units: :miles) ==
+             C.nearest_point(target, ctx.points, units: :kilometers)
+  end
 end

@@ -2,6 +2,7 @@ defmodule Geo.Turf.Classification do
   @moduledoc """
   A collection of classification and boolean spatial functions.
   """
+  alias Geo.Turf.Measure
 
   @doc """
   Takes a Point and a Polygon (or MultiPolygon) and determines whether the
@@ -70,6 +71,41 @@ defmodule Geo.Turf.Classification do
         ) :: [Geo.Point.t()]
   def points_within_polygon(points, polygon) when is_list(points) do
     Enum.filter(points, &point_in_polygon?(&1, polygon))
+  end
+
+  @doc """
+  Takes a reference Point and a list of Points and returns the point closest
+  to the reference. Distance is calculated geodesically (Haversine).
+
+  Returns `nil` if the list is empty.
+
+  ## Options
+
+  * `:units` - unit for distance calculation, defaults to `:kilometers`.
+    See `Geo.Turf.Math.length_unit/0` for valid values.
+
+  ## Examples
+
+      iex> target = %Geo.Point{coordinates: {28.965797, 41.010086}}
+      ...> points = [
+      ...>   %Geo.Point{coordinates: {28.973865, 41.011122}},
+      ...>   %Geo.Point{coordinates: {28.948459, 41.024204}},
+      ...>   %Geo.Point{coordinates: {28.938674, 41.013324}}
+      ...> ]
+      ...> Geo.Turf.Classification.nearest_point(target, points)
+      %Geo.Point{coordinates: {28.973865, 41.011122}}
+
+      iex> Geo.Turf.Classification.nearest_point(%Geo.Point{coordinates: {0, 0}}, [])
+      nil
+
+  """
+  @spec nearest_point(Geo.Point.t(), [Geo.Point.t()], keyword()) :: Geo.Point.t() | nil
+  def nearest_point(target, points, opts \\ [])
+  def nearest_point(_target, [], _opts), do: nil
+
+  def nearest_point(target, points, opts) when is_list(points) do
+    units = Keyword.get(opts, :units, :kilometers)
+    Enum.min_by(points, &Measure.distance(target, &1, units))
   end
 
   # Returns :outside, :boundary, or :inside for a point against a single ring.
