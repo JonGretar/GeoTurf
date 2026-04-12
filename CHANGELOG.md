@@ -1,5 +1,11 @@
 # Geo Turf Changelog
 
+## UNRELEASED
+
+## 0.3.1
+
+- Adds Geo 0.4.x support
+
 ## 0.3.0
 
 - Added Measure.destination/3

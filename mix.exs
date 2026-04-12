@@ -61,7 +61,9 @@ defmodule Geo.Turf.MixProject do
 
   def docs do
     [
-      main: "Geo.Turf"
+      main: "Geo.Turf",
+      extras: ["CHANGELOG.md"],
+      source_url: "https://github.com/JonGretar/GeoTurf"
     ]
   end
 
