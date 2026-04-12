@@ -41,7 +41,9 @@ defmodule Geo.Turf.Transformation do
 
     coordinates =
       0..(steps - 1)
-      |> Enum.map(&Measure.destination(center, radius, &1 * -360 / steps, units: units).coordinates)
+      |> Enum.map(
+        &Measure.destination(center, radius, &1 * -360 / steps, units: units).coordinates
+      )
       |> then(&(&1 ++ [hd(&1)]))
 
     %Geo.Polygon{coordinates: [coordinates], srid: 4326}

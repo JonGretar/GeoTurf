@@ -25,3 +25,6 @@ geo_*.tar
 
 /.elixir_ls
 .vscode
+
+# Dialyzer PLTs
+/priv/plts/

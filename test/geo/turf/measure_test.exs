@@ -1,8 +1,8 @@
 defmodule Geo.Test.MeasureTest do
   use ExUnit.Case
   use Fixate.Case
-  alias Geo.Turf.Measure, as: M
   alias Geo.Turf.Math, as: Math
+  alias Geo.Turf.Measure, as: M
   doctest Geo.Turf.Measure
 
   @fixture dcline: "along/dc-line.geojson"

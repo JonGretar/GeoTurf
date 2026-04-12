@@ -11,13 +11,24 @@ defmodule Geo.Turf.MixProject do
       package: package(),
       elixirc_paths: elixirc_paths(Mix.env()),
       test_coverage: [tool: ExCoveralls],
+      dialyzer: [plt_file: {:no_warn, "priv/plts/#{Mix.env()}.plt"}],
       deps: deps(),
       docs: docs(),
       preferred_cli_env: [
         coveralls: :test,
         "coveralls.detail": :test,
         "coveralls.post": :test,
-        "coveralls.html": :test
+        "coveralls.html": :test,
+        precommit: :test
+      ],
+      aliases: [
+        precommit: [
+          "compile --warnings-as-errors",
+          "format --check-formatted",
+          "test",
+          "dialyzer",
+          "credo --strict"
+        ]
       ]
     ]
   end
@@ -43,6 +54,7 @@ defmodule Geo.Turf.MixProject do
       {:jason, "~> 1.4", only: [:dev, :test]},
       {:excoveralls, "~> 0.18", only: :test},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:fixate, "~> 0.1", only: :test}
     ]
   end

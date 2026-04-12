@@ -61,21 +61,21 @@ defmodule Geo.Turf.Math do
   @tau :math.pi() * 2
 
   @doc false
-  @spec factor(:atom) :: Number.t()
+  @spec factor(:atom) :: number()
   def factor(factor), do: @factors[factor]
 
   @doc false
-  @spec units_factors(:atom) :: Number.t()
+  @spec units_factors(:atom) :: number()
   def units_factors(factor), do: @units_factors[factor]
 
   @doc false
-  @spec area_factors(:atom) :: Number.t()
+  @spec area_factors(:atom) :: number()
   def area_factors(factor), do: @area_factors[factor]
 
   @doc false
-  @spec earth_radius() :: Number.t()
+  @spec earth_radius() :: number()
 
-  def earth_radius(), do: @earth_radius
+  def earth_radius, do: @earth_radius
 
   @spec radians_to_length(number(), length_unit) :: number()
   def radians_to_length(radians, unit \\ :kilometers) when is_number(radians) do
