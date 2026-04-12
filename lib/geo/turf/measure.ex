@@ -7,6 +7,7 @@ defmodule Geo.Turf.Measure do
 
   @type units :: {:units, Math.length_unit()}
 
+  @spec along(Geo.LineString.t(), number(), Math.length_unit()) :: Geo.Point.t() | :error
   @doc """
   Takes a LineString and returns a Point at a specified distance along the line.
   Note that this will aproximate location to the nearest coordinate point.
@@ -35,6 +36,7 @@ defmodule Geo.Turf.Measure do
   defp walk_along([{x, y}], _distance, _unit, _acc), do: %Geo.Point{coordinates: {x, y}}
   defp walk_along([], _distance, _unit, _acc), do: :error
 
+  @spec along_midpoint(Geo.LineString.t()) :: Geo.Point.t() | :error
   @doc """
   Takes a LineString and returns a Point at the middle of the line.
 
@@ -147,6 +149,7 @@ defmodule Geo.Turf.Measure do
     Math.radians_to_degrees(:math.atan2(a, b))
   end
 
+  @spec center(Geo.geometry()) :: Geo.Point.t()
   @doc """
   Find the center of a `Geo.geometry()` item and give us a `Geo.Point`
 
@@ -176,6 +179,7 @@ defmodule Geo.Turf.Measure do
     end
   end
 
+  @spec close_to(Geo.Point.t(), Geo.Point.t(), number(), Math.length_unit()) :: boolean()
   @doc """
   Verifies that two points are close to each other. Defaults to 100 meters.
 
@@ -229,6 +233,7 @@ defmodule Geo.Turf.Measure do
     Math.radians_to_length(2 * :math.atan2(:math.sqrt(a), :math.sqrt(1 - a)), unit)
   end
 
+  @spec length_of(Geo.geometry(), Math.length_unit()) :: number()
   @doc """
   Takes a `t:Geo.geometry()` and measures its length in the specified units.
 
