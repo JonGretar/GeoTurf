@@ -2,6 +2,9 @@
 
 ## UNRELEASED
 
+- Added Classification.point_in_polygon?/3
+- Added Classification.points_within_polygon/2
+
 ## 0.3.1
 
 - Adds Geo 0.4.x support

@@ -23,6 +23,11 @@ erl_crash.dump
 # Ignore package tarball (built via "mix hex.build").
 geo_*.tar
 
+# Temp
+/temp
+/tmp
+
+# Code Dev
 /.elixir_ls
 .vscode
 
