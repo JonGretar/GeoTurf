@@ -1,6 +1,6 @@
 # Geo Turf Changelog
 
-## UNRELEASED
+## 0.4.0 - 2026-04-12
 
 - Added Classification.point_in_polygon?/3
 - Added Classification.points_within_polygon/2
