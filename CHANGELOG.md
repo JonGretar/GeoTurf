@@ -6,6 +6,7 @@
 - Added Classification.points_within_polygon/2
 - Added Classification.nearest_point/3
 - Added Measure.centroid/1
+- Added Helpers.bbox_polygon/1
 
 ## 0.3.1
 

@@ -41,6 +41,27 @@ defmodule Geo.Turf.Helpers do
   end
 
   @doc """
+  Takes a bounding box tuple and returns it as a `%Geo.Polygon{}`.
+
+  The ring winds: SW → SE → NE → NW → SW.
+
+  ## Examples
+
+      iex> Geo.Turf.Helpers.bbox_polygon({0, 0, 10, 10})
+      %Geo.Polygon{coordinates: [[{0, 0}, {10, 0}, {10, 10}, {0, 10}, {0, 0}]]}
+
+      iex> Geo.Turf.Helpers.bbox_polygon({-180, -90, 180, 90})
+      %Geo.Polygon{coordinates: [[{-180, -90}, {180, -90}, {180, 90}, {-180, 90}, {-180, -90}]]}
+
+  """
+  @spec bbox_polygon({number(), number(), number(), number()}) :: Geo.Polygon.t()
+  def bbox_polygon({west, south, east, north}) do
+    %Geo.Polygon{
+      coordinates: [[{west, south}, {east, south}, {east, north}, {west, north}, {west, south}]]
+    }
+  end
+
+  @doc """
   Flatten a `t:Geo.geometry()` to a simple list of coordinates
 
   ## Examples
