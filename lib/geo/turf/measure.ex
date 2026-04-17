@@ -10,12 +10,16 @@ defmodule Geo.Turf.Measure do
   @spec along(Geo.LineString.t(), number(), Math.length_unit()) :: Geo.Point.t() | :error
   @doc """
   Takes a LineString and returns a Point at a specified distance along the line.
+  Returns `:error` if the LineString has no coordinates.
 
   ## Examples
 
       iex> %Geo.LineString{coordinates: [{-23.621,64.769},{-23.629,64.766},{-23.638,64.766}]}
       ...>   |> Geo.Turf.Measure.along(2, :kilometers)
       %Geo.Point{coordinates: {-23.638,64.766}}
+
+      iex> Geo.Turf.Measure.along(%Geo.LineString{coordinates: []}, 1, :kilometers)
+      :error
   """
   def along(%Geo.LineString{coordinates: coords}, distance, unit \\ :kilometers)
       when is_number(distance) do
