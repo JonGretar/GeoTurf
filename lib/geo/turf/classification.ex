@@ -3,6 +3,7 @@ defmodule Geo.Turf.Classification do
   A collection of classification and boolean spatial functions.
   """
   alias Geo.Turf.Measure
+  import Geo.Turf.Helpers, only: [assert_wgs84!: 1]
 
   @doc """
   Takes a Point and a Polygon (or MultiPolygon) and determines whether the
@@ -33,10 +34,13 @@ defmodule Geo.Turf.Classification do
   def point_in_polygon?(point, polygon, opts \\ [])
 
   def point_in_polygon?(
-        %Geo.Point{coordinates: {px, py}},
-        %Geo.Polygon{coordinates: [outer | holes]},
+        %Geo.Point{} = point,
+        %Geo.Polygon{coordinates: [outer | holes]} = polygon,
         opts
       ) do
+    assert_wgs84!(point)
+    assert_wgs84!(polygon)
+    %Geo.Point{coordinates: {px, py}} = point
     ignore_boundary = Keyword.get(opts, :ignore_boundary, false)
 
     case ring_status({px, py}, outer) do
@@ -48,9 +52,12 @@ defmodule Geo.Turf.Classification do
 
   def point_in_polygon?(
         %Geo.Point{} = point,
-        %Geo.MultiPolygon{coordinates: polys},
+        %Geo.MultiPolygon{} = mpoly,
         opts
       ) do
+    assert_wgs84!(point)
+    assert_wgs84!(mpoly)
+    %Geo.MultiPolygon{coordinates: polys} = mpoly
     Enum.any?(polys, &point_in_polygon?(point, %Geo.Polygon{coordinates: &1}, opts))
   end
 
@@ -104,6 +111,7 @@ defmodule Geo.Turf.Classification do
   def nearest_point(_target, [], _opts), do: nil
 
   def nearest_point(target, points, opts) when is_list(points) do
+    assert_wgs84!(target)
     units = Keyword.get(opts, :units, :kilometers)
     Enum.min_by(points, &Measure.distance(target, &1, units))
   end

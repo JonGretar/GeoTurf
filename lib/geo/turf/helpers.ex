@@ -88,4 +88,16 @@ defmodule Geo.Turf.Helpers do
 
   defp flatten_coords(%Geo.GeometryCollection{geometries: geom}, acc),
     do: (acc ++ Enum.map(geom, &flatten_coords/1)) |> List.flatten()
+
+  @doc """
+  Raises `ArgumentError` if the geometry's SRID is set to anything other than
+  WGS84 (EPSG:4326) or `nil` (which is treated as WGS84). All GeoTurf
+  calculations assume WGS84 coordinates.
+  """
+  @spec assert_wgs84!(term()) :: :ok
+  def assert_wgs84!(%{srid: srid}) when srid not in [nil, 4326] do
+    raise ArgumentError, "GeoTurf only supports WGS84 (EPSG:4326), got SRID #{srid}"
+  end
+
+  def assert_wgs84!(_), do: :ok
 end

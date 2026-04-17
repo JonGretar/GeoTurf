@@ -2,7 +2,7 @@ defmodule Geo.Turf.Measure do
   @moduledoc """
   A collection of measurement related tools
   """
-  import Geo.Turf.Helpers, only: [bbox: 1, flatten_coords: 1]
+  import Geo.Turf.Helpers, only: [bbox: 1, flatten_coords: 1, assert_wgs84!: 1]
   alias Geo.Turf.Math
 
   @type units :: {:units, Math.length_unit()}
@@ -21,8 +21,10 @@ defmodule Geo.Turf.Measure do
       iex> Geo.Turf.Measure.along(%Geo.LineString{coordinates: []}, 1, :kilometers)
       :error
   """
-  def along(%Geo.LineString{coordinates: coords}, distance, unit \\ :kilometers)
+  def along(%Geo.LineString{} = line, distance, unit \\ :kilometers)
       when is_number(distance) do
+    assert_wgs84!(line)
+    %Geo.LineString{coordinates: coords} = line
     walk_along(coords, distance, unit, 0)
   end
 
@@ -66,24 +68,29 @@ defmodule Geo.Turf.Measure do
       ...>   |> Geo.Turf.Measure.area()
       3332484969239.2676
   """
-  def area(%Geo.GeometryCollection{geometries: geometries}) do
+  def area(geometry) do
+    assert_wgs84!(geometry)
+    calc_area(geometry)
+  end
+
+  defp calc_area(%Geo.GeometryCollection{geometries: geometries}) do
     geometries
     |> Enum.map(&area/1)
     |> Enum.sum()
   end
 
-  def area(%Geo.Polygon{coordinates: coords}), do: polygon_area(coords)
+  defp calc_area(%Geo.Polygon{coordinates: coords}), do: polygon_area(coords)
 
-  def area(%Geo.MultiPolygon{coordinates: coords}) do
+  defp calc_area(%Geo.MultiPolygon{coordinates: coords}) do
     coords
     |> Enum.map(&polygon_area/1)
     |> Enum.sum()
   end
 
-  def area(%Geo.Point{}), do: 0
-  def area(%Geo.MultiPoint{}), do: 0
-  def area(%Geo.LineString{}), do: 0
-  def area(%Geo.MultiLineString{}), do: 0
+  defp calc_area(%Geo.Point{}), do: 0
+  defp calc_area(%Geo.MultiPoint{}), do: 0
+  defp calc_area(%Geo.LineString{}), do: 0
+  defp calc_area(%Geo.MultiLineString{}), do: 0
 
   defp polygon_area(coords) when coords == [], do: 0
 
@@ -140,7 +147,11 @@ defmodule Geo.Turf.Measure do
       ...>  |> Geo.Turf.Math.rounded(2)
       -170.23
   """
-  def bearing(%Geo.Point{coordinates: {x1, y1}}, %Geo.Point{coordinates: {x2, y2}}) do
+  def bearing(%Geo.Point{} = p1, %Geo.Point{} = p2) do
+    assert_wgs84!(p1)
+    assert_wgs84!(p2)
+    %Geo.Point{coordinates: {x1, y1}} = p1
+    %Geo.Point{coordinates: {x2, y2}} = p2
     lon1 = Math.degrees_to_radians(x1)
     lon2 = Math.degrees_to_radians(x2)
     lat1 = Math.degrees_to_radians(y1)
@@ -168,6 +179,8 @@ defmodule Geo.Turf.Measure do
       -170.35
   """
   def final_bearing(%Geo.Point{} = p1, %Geo.Point{} = p2) do
+    assert_wgs84!(p1)
+    assert_wgs84!(p2)
     b = bearing(p2, p1) + 180
     if b > 180, do: b - 360, else: b
   end
@@ -191,6 +204,7 @@ defmodule Geo.Turf.Measure do
 
   """
   def centroid(geometry) do
+    assert_wgs84!(geometry)
     coords = centroid_coords(geometry)
     len = length(coords)
     {sum_x, sum_y} = Enum.reduce(coords, {0, 0}, fn {x, y}, {sx, sy} -> {sx + x, sy + y} end)
@@ -226,6 +240,7 @@ defmodule Geo.Turf.Measure do
 
   """
   def center(geometry) when is_map(geometry) do
+    assert_wgs84!(geometry)
     {min_x, min_y, max_x, max_y} = bbox(geometry)
 
     if is_integer(min_x) && is_integer(min_y) && is_integer(max_x) && is_integer(max_y) do
@@ -277,6 +292,9 @@ defmodule Geo.Turf.Measure do
       97.13
   """
   def distance(from, to, unit \\ :kilometers) do
+    assert_wgs84!(from)
+    assert_wgs84!(to)
+
     get_distance(from, to, unit)
     |> Math.rounded(2)
   end
@@ -310,6 +328,8 @@ defmodule Geo.Turf.Measure do
       0.93
   """
   def length_of(feature, unit \\ :kilometers) do
+    assert_wgs84!(feature)
+
     feature
     |> flatten_coords()
     |> walk_length(unit, 0)
@@ -343,7 +363,9 @@ defmodule Geo.Turf.Measure do
           bearing :: number(),
           options :: [units()]
         ) :: Geo.Point.t()
-  def destination(%Geo.Point{coordinates: {x, y}}, distance, bearing, opts \\ []) do
+  def destination(%Geo.Point{} = origin, distance, bearing, opts \\ []) do
+    assert_wgs84!(origin)
+    %Geo.Point{coordinates: {x, y}} = origin
     units = Keyword.get(opts, :units, :kilometers)
 
     lat1 = Math.degrees_to_radians(y)
