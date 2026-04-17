@@ -4,6 +4,7 @@
 
 - Fixed Measure.along/3 to geodesically interpolate mid-segment points instead of snapping to the nearest vertex
 - Added Math.approx/2 for rounding Point coordinates to a given precision
+- Added Measure.final_bearing/2
 
 ## 0.4.0 - 2026-04-12
 

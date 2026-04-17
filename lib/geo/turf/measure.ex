@@ -124,7 +124,6 @@ defmodule Geo.Turf.Measure do
 
   defp select_upper(coords, index), do: Enum.at(coords, index + 2)
 
-  # TODO: Add final bearing option
   @spec bearing(Geo.Point.t(), Geo.Point.t()) :: float()
   @doc """
   Takes two points and finds the geographic bearing between them,
@@ -150,6 +149,23 @@ defmodule Geo.Turf.Measure do
         :math.sin(lat1) * :math.cos(lat2) * :math.cos(lon2 - lon1)
 
     Math.radians_to_degrees(:math.atan2(a, b))
+  end
+
+  @spec final_bearing(Geo.Point.t(), Geo.Point.t()) :: float()
+  @doc """
+  Takes two points and finds the final bearing between them, i.e. the bearing
+  as it arrives at the destination point. Returns degrees in the range [-180, 180].
+
+  ## Examples
+      iex> point1 = %Geo.Point{coordinates: {-75.343, 39.984}}
+      ...> point2 = %Geo.Point{coordinates: {-75.534, 39.123}}
+      ...> Geo.Turf.Measure.final_bearing(point1, point2)
+      ...>  |> Geo.Turf.Math.rounded(2)
+      -170.35
+  """
+  def final_bearing(%Geo.Point{} = p1, %Geo.Point{} = p2) do
+    b = bearing(p2, p1) + 180
+    if b > 180, do: b - 360, else: b
   end
 
   @spec centroid(Geo.geometry()) :: Geo.Point.t()
