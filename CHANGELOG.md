@@ -1,5 +1,10 @@
 # Geo Turf Changelog
 
+## UNRELEASED
+
+- Fixed Measure.along/3 to geodesically interpolate mid-segment points instead of snapping to the nearest vertex
+- Added Math.approx/2 for rounding Point coordinates to a given precision
+
 ## 0.4.0 - 2026-04-12
 
 - Added Classification.point_in_polygon?/3

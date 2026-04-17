@@ -10,27 +10,29 @@ defmodule Geo.Turf.Measure do
   @spec along(Geo.LineString.t(), number(), Math.length_unit()) :: Geo.Point.t() | :error
   @doc """
   Takes a LineString and returns a Point at a specified distance along the line.
-  Note that this will aproximate location to the nearest coordinate point.
 
   ## Examples
 
       iex> %Geo.LineString{coordinates: [{-23.621,64.769},{-23.629,64.766},{-23.638,64.766}]}
-      ...>   |> Geo.Turf.Measure.along(400, :meters)
-      %Geo.Point{coordinates: {-23.629,64.766}}
+      ...>   |> Geo.Turf.Measure.along(2, :kilometers)
+      %Geo.Point{coordinates: {-23.638,64.766}}
   """
   def along(%Geo.LineString{coordinates: coords}, distance, unit \\ :kilometers)
       when is_number(distance) do
     walk_along(coords, distance, unit, 0)
   end
 
-  defp walk_along([from, to | next], distance, unit, acc) when distance > acc do
+  defp walk_along([from, to | next], distance, unit, acc) do
     travel = get_distance(from, to, unit)
-    walk_along([to | next], distance, unit, acc + travel)
-  end
+    new_acc = acc + travel
 
-  defp walk_along([from | _next], distance, _unit, acc) when distance < acc do
-    # TODO: overshot
-    %Geo.Point{coordinates: from}
+    if distance <= new_acc do
+      overshot = distance - new_acc
+      direction = bearing(%Geo.Point{coordinates: to}, %Geo.Point{coordinates: from}) - 180
+      destination(%Geo.Point{coordinates: to}, overshot, direction, units: unit)
+    else
+      walk_along([to | next], distance, unit, new_acc)
+    end
   end
 
   defp walk_along([{x, y}], _distance, _unit, _acc), do: %Geo.Point{coordinates: {x, y}}
@@ -44,7 +46,8 @@ defmodule Geo.Turf.Measure do
 
       iex> %Geo.LineString{coordinates: [{-23.621,64.769},{-23.629,64.766},{-23.638,64.766}]}
       ...>   |> Geo.Turf.Measure.along_midpoint()
-      %Geo.Point{coordinates: {-23.629, 64.766}}
+      ...>   |> Geo.Turf.Math.approx(4)
+      %Geo.Point{coordinates: {-23.6284, 64.7662}}
   """
   def along_midpoint(%Geo.LineString{} = line) do
     along(line, length_of(line) / 2)

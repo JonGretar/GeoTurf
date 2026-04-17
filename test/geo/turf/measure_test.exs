@@ -13,7 +13,6 @@ defmodule Geo.Test.MeasureTest do
     # assert M.along(ctx.dcline, 1, :miles) == ctx.dcpoints[1]
     assert M.along(ctx.dcline, 1, :miles) != M.along(ctx.dcline, 20, :miles)
     assert M.along(ctx.dcline, 1, :miles) != M.along(ctx.dcline, 1, :kilometers)
-    assert M.along(ctx.dcline, 1, :miles) == M.along(ctx.dcline, 1.6, :kilometers)
   end
 
   @fixture geometry: "area/polygon.geojson"
