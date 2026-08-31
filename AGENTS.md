@@ -29,6 +29,14 @@ Follows [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/).
 - Generate a release **ONLY** when instructed to do so.
 - On release: replace `## [Unreleased]` with `## [x.y.z] - YYYY-MM-DD` and bump `version:` in `mix.exs`. Create a tag with "v" prefix (`vx.y.z`) in the repository.
 
+## Planning
+
+- `docs/` is GeoTurf's authoritative work system.
+- Before changing code, read `docs/WORKFLOW.md` and the relevant `docs/plans/*.md`.
+- Do not start `Proposed` or `Blocked` plans without user direction.
+- Keep plan state, acceptance criteria, verification results, and handoff notes current.
+- Read ADRs only when linked from the active plan.
+
 ## Commands
 
 ```bash
