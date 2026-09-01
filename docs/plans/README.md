@@ -5,7 +5,7 @@ change set and complete enough that an agent can verify it independently.
 
 ## Active
 
-- [Quality Foundations](2026-08-quality-foundations.md) - `In progress`
+- [Quality Foundations](2026-08-quality-foundations.md) - `Blocked`, awaiting CI matrix verification
 
 ## Proposed
 

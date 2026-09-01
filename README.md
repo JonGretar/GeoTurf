@@ -38,6 +38,9 @@ Geo.Turf.Measure.center(polygon)    # => %Geo.Point{...}  (bbox centre)
 Geo.Turf.Measure.centroid(polygon)  # => %Geo.Point{...}  (mean of vertices)
 ```
 
+`length_of/2` is GeoTurf's canonical length interface; its name deliberately
+avoids ambiguity with Elixir's `Kernel.length/1`.
+
 ### `Geo.Turf.Classification`
 
 Spatial predicates and search.

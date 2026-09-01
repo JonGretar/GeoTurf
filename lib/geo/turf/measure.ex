@@ -349,6 +349,8 @@ defmodule Geo.Turf.Measure do
   @spec length_of(Geo.geometry(), Math.length_unit()) :: number()
   @doc """
   Takes a `t:Geo.geometry()` and measures its length in the specified units.
+  `length_of/2` is the canonical name because it avoids ambiguity with
+  `Kernel.length/1`.
 
   LineString paths and every independent MultiLineString member, polygon ring,
   MultiPolygon ring, and GeometryCollection child path contribute to the

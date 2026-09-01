@@ -1,9 +1,9 @@
 # Quality Foundations
 
-State: `In progress`
+State: `Blocked`
 Priority: `P0`
 Owner: `Delta`
-Dependencies: `None`
+Dependencies: `Quality Foundations CI must run on the supported version matrix`
 
 ## Outcome
 
@@ -56,14 +56,14 @@ documented contracts for invalid input.
 ### 4. Delivery Contract
 
 - [x] Correct `:unit` / `:units` documentation, types, and tests.
-- [ ] Decide the canonical public length interface and compatibility path from
+- [x] Decide the canonical public length interface and compatibility path from
       `length_of/2`, as required by the `0.5` contract reset.
 - [x] Declare an Elixir support floor compatible with all language features in
       the implementation.
 - [x] Make CI run formatting and strict Credo in addition to compile, test,
       and Dialyzer.
 - [x] Add a supported Elixir/OTP matrix after selecting the minimum version.
-- [ ] Update `CHANGELOG.md` under `Unreleased` for user-visible behavior.
+- [x] Update `CHANGELOG.md` under `Unreleased` for user-visible behavior.
 
 ## Acceptance Criteria
 
@@ -74,9 +74,9 @@ documented contracts for invalid input.
       documented.
 - [x] Circle and destination options agree across implementation, types, docs,
       and tests.
-- [ ] The canonical length interface and any `length_of/2` compatibility path
+- [x] The canonical length interface and any `length_of/2` compatibility path
       are documented and tested.
-- [ ] Local and CI quality checks enforce the same required checks.
+- [x] Local and CI quality checks enforce the same required checks.
 
 ## Verification
 
@@ -144,9 +144,16 @@ documented contracts for invalid input.
   Dialyzer, and documentation generation against `main`.
 - 2026-09-01: The delivery slice passed `mix precommit` and warning-free
   documentation generation locally. The version matrix itself requires CI.
+- 2026-09-01: `length_of/2` remains the canonical public interface because it
+  avoids ambiguity with `Kernel.length/1`. There is no compatibility migration:
+  retaining the existing interface follows Elixir naming conventions without
+  disrupting callers solely for TurfJS spelling parity.
+- 2026-09-01: Implementation and local verification are complete. The plan is
+  blocked only on publishing `main` to origin and observing the new Elixir/OTP
+  CI matrix; Delta does not publish externally without explicit permission.
 
 ## Handoff
 
-Only the canonical length-interface decision and final changelog/plan review
-remain. Decide whether `length_of/2` stays canonical or becomes a compatibility
-wrapper around a TurfJS-aligned `length/2`.
+Push `main` to origin, verify every CI matrix and quality job passes, then mark
+this plan `Done`, check the four Quality Foundations roadmap items, and prepare
+the explicitly authorized `0.5.0` release.
