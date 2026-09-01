@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Helpers.assert_wgs84!/1` and guards on all public geodesic functions against non-WGS84 SRIDs
 - `Math.approx/2` for rounding Point coordinates to a given precision
 
+### Changed
+
+- `Measure.distance/3` now returns raw geodesic values; callers can use `Math.rounded/2` for display rounding
+- `Measure.close_to/4` uses raw distance and includes points exactly at the maximum threshold
+- `Classification.nearest_point/3` ranks candidates by raw distance
+
 ### Fixed
 
 - `Measure.along/3` now geodesically interpolates mid-segment points instead of snapping to the nearest vertex

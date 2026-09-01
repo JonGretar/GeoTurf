@@ -225,6 +225,14 @@ defmodule Geo.Turf.ClassificationTest do
     assert C.nearest_point(%Geo.Point{coordinates: {0, 0}}, [pt]) == pt
   end
 
+  test "nearest_point ranks candidates by raw distance rather than display rounding" do
+    target = %Geo.Point{coordinates: {0, 0}}
+    farther = %Geo.Point{coordinates: {0, 0.0008993563365390871}}
+    nearer = %Geo.Point{coordinates: {0, 0.0008993293569281753}}
+
+    assert C.nearest_point(target, [farther, nearer], units: :meters) == nearer
+  end
+
   @fixture points: "nearest_point/points.geojson"
   test "nearest_point respects units option — miles vs kilometers same winner", ctx do
     target = %Geo.Point{coordinates: {-75.4, 39.4}}

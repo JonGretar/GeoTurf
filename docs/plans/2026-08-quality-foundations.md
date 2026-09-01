@@ -33,13 +33,13 @@ documented contracts for invalid input.
 
 ### 2. Raw Geodesic Metrics
 
-- [ ] Add a threshold test showing that display rounding must not affect
+- [x] Add a threshold test showing that display rounding must not affect
       `close_to/4`.
-- [ ] Add a nearest-point test where two candidates round to the same visible
+- [x] Add a nearest-point test where two candidates round to the same visible
       distance but have different raw distances.
-- [ ] Introduce one internal raw-distance implementation shared by
+- [x] Introduce one internal raw-distance implementation shared by
       measurements, predicates, and ranking.
-- [ ] Decide and document the public `distance/3` precision contract before
+- [x] Decide and document the public `distance/3` precision contract before
       changing its return value.
 
 ### 3. Geometry And Unit Contracts
@@ -67,7 +67,7 @@ documented contracts for invalid input.
 
 - [x] `length_of/2` never measures an invented segment between independent
       coordinate paths.
-- [ ] Threshold and nearest-point behavior use raw geodesic values.
+- [x] Threshold and nearest-point behavior use raw geodesic values.
 - [ ] Empty/invalid geometry and unit behavior are intentional, tested, and
       documented.
 - [ ] Circle and destination options agree across implementation, types, docs,
@@ -97,8 +97,16 @@ documented contracts for invalid input.
 - 2026-09-01: Track 1 passed formatting, tests (57 tests, 29 doctests),
   Coveralls (89.8%), Dialyzer, strict Credo, and docs. Docs retain two existing
   warnings about private `Math.length_unit/0` references outside this track.
+- 2026-09-01: `distance/3` returns raw floating-point geodesic values, as
+  required by the `0.5` contract reset. Display rounding is an explicit caller
+  decision through `Math.rounded/2`.
+- 2026-09-01: `close_to/4` compares raw values and treats its maximum threshold
+  as inclusive. `nearest_point/3` ranks by the same raw distance calculation.
+- 2026-09-01: Track 2 passed formatting, tests (60 tests, 29 doctests),
+  Coveralls (89.8%), Dialyzer, strict Credo, and docs. The two existing
+  `Math.length_unit/0` documentation warnings remain for track 4.
 
 ## Handoff
 
-Track 1 is complete. Begin track 2 with a failing threshold test demonstrating
-that display rounding changes `close_to/4` near its maximum distance.
+Tracks 1 and 2 are complete. Begin track 3 by deciding empty geometry behavior
+for each accepted geometry family, then capture the decisions in focused tests.

@@ -17,7 +17,7 @@ Measurements and geometry queries.
 point = %Geo.Point{coordinates: {-75.343, 39.984}}
 other = %Geo.Point{coordinates: {-75.534, 39.123}}
 
-Geo.Turf.Measure.distance(point, other, :kilometers)       # => 97.13
+Geo.Turf.Measure.distance(point, other, :kilometers)       # => 97.12922118967835
 Geo.Turf.Measure.bearing(point, other)                     # => -170.23
 Geo.Turf.Measure.close_to(point, other, 100, :kilometers)  # => true
 Geo.Turf.Measure.destination(point, 50, 90, units: :kilometers)  # => %Geo.Point{...}

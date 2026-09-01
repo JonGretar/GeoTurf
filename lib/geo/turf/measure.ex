@@ -29,7 +29,7 @@ defmodule Geo.Turf.Measure do
   end
 
   defp walk_along([from, to | next], distance, unit, acc) do
-    travel = get_distance(from, to, unit)
+    travel = raw_distance(from, to, unit)
     new_acc = acc + travel
 
     if distance <= new_acc do
@@ -262,7 +262,8 @@ defmodule Geo.Turf.Measure do
 
   @spec close_to(Geo.Point.t(), Geo.Point.t(), number(), Math.length_unit()) :: boolean()
   @doc """
-  Verifies that two points are close to each other. Defaults to 100 meters.
+  Verifies that two points are within a maximum raw geodesic distance of each
+  other. The maximum is inclusive and defaults to 100 meters.
 
   ## Examples
 
@@ -276,12 +277,14 @@ defmodule Geo.Turf.Measure do
 
   """
   def close_to(point_a, point_b, maximum \\ 100, units \\ :meters) do
-    distance(point_a, point_b, units) < maximum
+    distance(point_a, point_b, units) <= maximum
   end
 
   @doc """
   Calculates the distance between two points in degrees, radians, miles, or kilometers.
   This uses the [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula) to account for global curvature.
+  Returns the raw floating-point result; use `Geo.Turf.Math.rounded/2` when
+  display rounding is needed.
 
   ## Examples
 
@@ -289,22 +292,21 @@ defmodule Geo.Turf.Measure do
       ...>   %Geo.Point{coordinates: {-75.343, 39.984}},
       ...>   %Geo.Point{coordinates: {-75.534, 39.123}},
       ...>   :kilometers)
-      97.13
+      97.12922118967835
   """
-  def distance(from, to, unit \\ :kilometers) do
-    assert_wgs84!(from)
-    assert_wgs84!(to)
+  @spec distance(Geo.Point.t(), Geo.Point.t(), Math.length_unit()) :: float()
+  def distance(
+        %Geo.Point{coordinates: from} = point_a,
+        %Geo.Point{coordinates: to} = point_b,
+        unit \\ :kilometers
+      ) do
+    assert_wgs84!(point_a)
+    assert_wgs84!(point_b)
 
-    get_distance(from, to, unit)
-    |> Math.rounded(2)
+    raw_distance(from, to, unit)
   end
 
-  defp get_distance(from, to, unit)
-
-  defp get_distance(%Geo.Point{coordinates: a}, %Geo.Point{coordinates: b}, unit),
-    do: distance(a, b, unit)
-
-  defp get_distance({x1, y1}, {x2, y2}, unit) do
+  defp raw_distance({x1, y1}, {x2, y2}, unit) do
     d_lat = Math.degrees_to_radians(y2 - y1)
     d_lon = Math.degrees_to_radians(x2 - x1)
     lat1 = Math.degrees_to_radians(y1)
@@ -413,7 +415,7 @@ defmodule Geo.Turf.Measure do
   end
 
   defp walk_length([from, to | next], unit, acc) do
-    travel = get_distance(from, to, unit)
+    travel = raw_distance(from, to, unit)
     walk_length([to | next], unit, acc + travel)
   end
 

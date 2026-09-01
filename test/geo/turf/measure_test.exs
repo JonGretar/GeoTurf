@@ -37,13 +37,28 @@ defmodule Geo.Test.MeasureTest do
   @fixture points: "distance/points.geojson"
   test "Distance", ctx do
     [start, finish] = ctx.points
-    assert M.distance(start, finish) == 97.13
-    assert M.distance(start, finish, :kilometers) == 97.13
-    assert M.distance(start, finish, :meters) == 97_129.22
-    assert M.distance(start, finish, :miles) == 60.35
-    assert M.distance(start, finish, :nauticalmiles) == 52.45
-    assert M.distance(start, finish, :radians) == 0.02
-    assert M.distance(start, finish, :degrees) == 0.87
+    assert_in_delta M.distance(start, finish), 97.12922118967835, 1.0e-12
+    assert_in_delta M.distance(start, finish, :kilometers), 97.12922118967835, 1.0e-12
+    assert_in_delta M.distance(start, finish, :meters), 97_129.22118967834, 1.0e-9
+    assert_in_delta M.distance(start, finish, :miles), 60.35329997171415, 1.0e-12
+    assert_in_delta M.distance(start, finish, :nauticalmiles), 52.44558379572265, 1.0e-12
+    assert_in_delta M.distance(start, finish, :radians), 0.015245501024842149, 1.0e-15
+    assert_in_delta M.distance(start, finish, :degrees), 0.8724834600465156, 1.0e-15
+  end
+
+  test "close_to compares its threshold against raw distance" do
+    origin = %Geo.Point{coordinates: {0, 0}}
+    just_over_100_meters = %Geo.Point{coordinates: {0, 0.0008993563365390871}}
+
+    refute M.close_to(origin, just_over_100_meters, 100.001, :meters)
+  end
+
+  test "close_to includes points exactly at its threshold" do
+    origin = %Geo.Point{coordinates: {0, 0}}
+    point = %Geo.Point{coordinates: {0, 1}}
+    threshold = M.distance(origin, point, :meters)
+
+    assert M.close_to(origin, point, threshold, :meters)
   end
 
   test "destination", _ctx do
