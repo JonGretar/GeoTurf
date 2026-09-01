@@ -11,6 +11,18 @@ GeoTurf supports Elixir 1.15 and later. CI verifies the minimum supported
 combination of Elixir 1.15 / OTP 26 and the current Elixir 1.18 / OTP 28
 combination.
 
+## Installation
+
+Add `geo_turf` to the dependencies in `mix.exs`:
+
+```elixir
+def deps do
+  [
+    {:geo_turf, "~> 0.5.0"}
+  ]
+end
+```
+
 ## WGS84 and SRID metadata
 
 GeoTurf's geodesic calculations require WGS84 longitude/latitude coordinates

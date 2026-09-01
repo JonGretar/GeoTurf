@@ -164,5 +164,6 @@ documented contracts for invalid input.
 ## Handoff
 
 Quality Foundations and every `0.5` contract-reset gate in `V1.md` are
-complete. Await explicit release authorization before replacing `Unreleased`,
-bumping the package version to `0.5.0`, and creating tag `v0.5.0`.
+complete. Release `0.5.0` was prepared on 2026-09-01 with matching package,
+README, HexDocs, and changelog versions and repository tag `v0.5.0`. Package
+publication remains a separate explicitly authorized action.

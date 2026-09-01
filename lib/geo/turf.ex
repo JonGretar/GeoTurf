@@ -8,6 +8,16 @@ defmodule Geo.Turf do
 
   *At the moment the library is in early development mode. The API could, and propably will, change on any moment.*
 
+  ## Installation
+
+  Add `geo_turf` to the dependencies in `mix.exs`:
+
+      def deps do
+        [
+          {:geo_turf, "~> 0.5.0"}
+        ]
+      end
+
   ## WGS84 and SRID metadata
 
   GeoTurf's geodesic calculations require WGS84 longitude/latitude coordinates
