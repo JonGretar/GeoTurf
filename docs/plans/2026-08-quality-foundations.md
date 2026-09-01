@@ -55,7 +55,7 @@ documented contracts for invalid input.
 
 ### 4. Delivery Contract
 
-- [ ] Correct `:unit` / `:units` documentation, types, and tests.
+- [x] Correct `:unit` / `:units` documentation, types, and tests.
 - [ ] Decide the canonical public length interface and compatibility path from
       `length_of/2`, as required by the `0.5` contract reset.
 - [ ] Declare an Elixir support floor compatible with all language features in
@@ -72,7 +72,7 @@ documented contracts for invalid input.
 - [x] Threshold and nearest-point behavior use raw geodesic values.
 - [x] Empty/invalid geometry and unit behavior are intentional, tested, and
       documented.
-- [ ] Circle and destination options agree across implementation, types, docs,
+- [x] Circle and destination options agree across implementation, types, docs,
       and tests.
 - [ ] The canonical length interface and any `length_of/2` compatibility path
       are documented and tested.
@@ -133,8 +133,15 @@ documented contracts for invalid input.
 - 2026-09-01: The output-SRID slice passed formatting, tests (74 tests,
   29 doctests), Coveralls (94.5%), Dialyzer, strict Credo, and docs without
   warnings. Track 3 is complete.
+- 2026-09-01: Circle and destination consistently accept `:units`; the
+  singular `:unit` and other unknown options raise `ArgumentError` instead of
+  silently falling back to defaults.
+- 2026-09-01: The option-contract slice passed formatting, tests (76 tests,
+  29 doctests), Coveralls (94.5%), Dialyzer, strict Credo, and docs without
+  warnings.
 
 ## Handoff
 
-Tracks 1 through 3 are complete. Begin track 4 by aligning public option names,
-types, documentation, and tests.
+Tracks 1 through 3 and the option portion of track 4 are complete. Continue
+track 4 by declaring and testing the supported Elixir/OTP range and aligning
+local and CI quality checks.

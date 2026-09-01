@@ -8,8 +8,14 @@ defmodule Geo.Test.TransformationTest do
   test "circle", ctx do
     [center, result_circle] = ctx.circle
 
-    assert round_polygon(T.circle(center, 1, steps: 10, unit: :kilometers)) ==
+    assert round_polygon(T.circle(center, 1, steps: 10, units: :kilometers)) ==
              round_polygon(result_circle)
+  end
+
+  test "circle rejects the singular :unit option" do
+    assert_raise ArgumentError, ~r/unknown keys \[:unit\]/, fn ->
+      T.circle(%Geo.Point{}, 1, unit: :miles)
+    end
   end
 
   defp round_polygon(%Geo.Polygon{coordinates: coords} = polygon) do

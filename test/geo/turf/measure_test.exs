@@ -85,6 +85,12 @@ defmodule Geo.Test.MeasureTest do
            }
   end
 
+  test "destination rejects the singular :unit option" do
+    assert_raise ArgumentError, ~r/unknown keys \[:unit\]/, fn ->
+      M.destination(%Geo.Point{}, 1, 0, unit: :miles)
+    end
+  end
+
   test "derived points have an explicit WGS84 SRID" do
     source = %Geo.LineString{coordinates: [{0, 0}, {0, 1}]}
 

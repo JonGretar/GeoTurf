@@ -6,7 +6,7 @@ defmodule Geo.Turf.Transformation do
   alias Geo.Turf.Math
   alias Geo.Turf.Measure
 
-  @type units :: {:unit, Math.length_unit()}
+  @type units :: {:units, Math.length_unit()}
   @type steps :: {:steps, non_neg_integer()}
 
   @type circle_options :: [units() | steps()]
@@ -32,10 +32,11 @@ defmodule Geo.Turf.Transformation do
           Geo.Polygon.t()
   def circle(%Geo.Point{coordinates: a} = center, radius, opts \\ [])
       when radius > 0 and is_tuple(a) do
-    units = Keyword.get(opts, :units, :kilometers)
+    opts = Keyword.validate!(opts, units: :kilometers, steps: 64)
+    units = opts[:units]
 
     steps =
-      case Keyword.get(opts, :steps, 64) do
+      case opts[:steps] do
         steps when is_integer(steps) and steps > 0 -> steps
         _ -> raise ArgumentError, "steps must be a positive integer"
       end

@@ -401,7 +401,7 @@ defmodule Geo.Turf.Measure do
   ## Examples
 
       iex> %Geo.Point{coordinates: {-75.343, 39.984}}
-      ...>   |> Geo.Turf.Measure.destination(100, 180, unit: :kilometers)
+      ...>   |> Geo.Turf.Measure.destination(100, 180, units: :kilometers)
       %Geo.Point{coordinates: {-75.343, 39.08467963627546}, srid: 4326}
   """
   @spec destination(
@@ -413,7 +413,8 @@ defmodule Geo.Turf.Measure do
   def destination(%Geo.Point{} = origin, distance, bearing, opts \\ []) do
     assert_wgs84!(origin)
     %Geo.Point{coordinates: {x, y}} = origin
-    units = Keyword.get(opts, :units, :kilometers)
+    opts = Keyword.validate!(opts, units: :kilometers)
+    units = opts[:units]
 
     lat1 = Math.degrees_to_radians(y)
     lon1 = Math.degrees_to_radians(x)
