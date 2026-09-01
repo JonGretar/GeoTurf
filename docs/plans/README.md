@@ -3,9 +3,9 @@
 Plans are the actionable queue. A plan must be small enough for one focused
 change set and complete enough that an agent can verify it independently.
 
-## Active
+## Completed
 
-- [Quality Foundations](2026-08-quality-foundations.md) - `Blocked`, awaiting CI matrix verification
+- [Quality Foundations](2026-08-quality-foundations.md) - `Done`
 
 ## Proposed
 

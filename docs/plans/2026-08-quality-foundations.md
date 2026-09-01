@@ -1,9 +1,9 @@
 # Quality Foundations
 
-State: `Blocked`
+State: `Done`
 Priority: `P0`
 Owner: `Delta`
-Dependencies: `Quality Foundations CI must run on the supported version matrix`
+Dependencies: `None`
 
 ## Outcome
 
@@ -151,9 +151,13 @@ documented contracts for invalid input.
 - 2026-09-01: Implementation and local verification are complete. The plan is
   blocked only on publishing `main` to origin and observing the new Elixir/OTP
   CI matrix; Delta does not publish externally without explicit permission.
+- 2026-09-01: CI run
+  [33495281396](https://github.com/JonGretar/GeoTurf/actions/runs/33495281396)
+  passed formatting, strict Credo, docs, Dialyzer, Elixir 1.15 / OTP 26 tests,
+  and Elixir 1.18 / OTP 28 tests. Quality Foundations is complete.
 
 ## Handoff
 
-Push `main` to origin, verify every CI matrix and quality job passes, then mark
-this plan `Done`, check the four Quality Foundations roadmap items, and prepare
-the explicitly authorized `0.5.0` release.
+Quality Foundations and every `0.5` contract-reset gate in `V1.md` are
+complete. Await explicit release authorization before replacing `Unreleased`,
+bumping the package version to `0.5.0`, and creating tag `v0.5.0`.
