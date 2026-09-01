@@ -8,7 +8,7 @@ defmodule Geo.Turf.Classification do
   @doc """
   Takes a Point and a Polygon (or MultiPolygon) and determines whether the
   Point lies inside the shape. Points on the boundary are considered inside
-  unless `:ignore_boundary` is set to `true`.
+  unless `:ignore_boundary` is set to `true`. Empty polygons return `false`.
 
   ## Options
 
@@ -32,6 +32,22 @@ defmodule Geo.Turf.Classification do
           keyword()
         ) :: boolean()
   def point_in_polygon?(point, polygon, opts \\ [])
+
+  def point_in_polygon?(%Geo.Point{} = point, %Geo.Polygon{coordinates: []} = polygon, _opts) do
+    assert_wgs84!(point)
+    assert_wgs84!(polygon)
+    false
+  end
+
+  def point_in_polygon?(
+        %Geo.Point{} = point,
+        %Geo.Polygon{coordinates: [[] | _]} = polygon,
+        _opts
+      ) do
+    assert_wgs84!(point)
+    assert_wgs84!(polygon)
+    false
+  end
 
   def point_in_polygon?(
         %Geo.Point{} = point,
@@ -77,6 +93,8 @@ defmodule Geo.Turf.Classification do
           Geo.Polygon.t() | Geo.MultiPolygon.t()
         ) :: [Geo.Point.t()]
   def points_within_polygon(points, polygon) when is_list(points) do
+    assert_wgs84!(points)
+    assert_wgs84!(polygon)
     Enum.filter(points, &point_in_polygon?(&1, polygon))
   end
 
@@ -108,12 +126,16 @@ defmodule Geo.Turf.Classification do
   """
   @spec nearest_point(Geo.Point.t(), [Geo.Point.t()], keyword()) :: Geo.Point.t() | nil
   def nearest_point(target, points, opts \\ [])
-  def nearest_point(_target, [], _opts), do: nil
 
   def nearest_point(target, points, opts) when is_list(points) do
     assert_wgs84!(target)
+    assert_wgs84!(points)
     units = Keyword.get(opts, :units, :kilometers)
-    Enum.min_by(points, &Measure.distance(target, &1, units))
+
+    case points do
+      [] -> nil
+      points -> Enum.min_by(points, &Measure.distance(target, &1, units))
+    end
   end
 
   # Returns :outside, :boundary, or :inside for a point against a single ring.

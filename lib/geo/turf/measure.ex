@@ -61,7 +61,8 @@ defmodule Geo.Turf.Measure do
 
   @spec area(Geo.geometry()) :: number()
   @doc """
-  Takes a feature or collection and returns their area in square meters.
+  Takes a geometry and returns its area in square meters. Geometries without
+  area, including empty geometries, return `0`.
 
   ## Examples
       iex> %Geo.Polygon{coordinates: [[{125, -15}, {113, -22}, {154, -27}, {144, -15}, {125, -15}]]}
@@ -185,11 +186,12 @@ defmodule Geo.Turf.Measure do
     if b > 180, do: b - 360, else: b
   end
 
-  @spec centroid(Geo.geometry()) :: Geo.Point.t()
+  @spec centroid(Geo.geometry()) :: Geo.Point.t() | :error
   @doc """
   Computes the centroid of a geometry as the mean position of all vertices.
   Closed polygon rings have their repeated closing vertex excluded, matching
   the behaviour of `turf.centroid`.
+  Returns `:error` when the geometry contains no coordinates.
 
   ## Examples
 
@@ -205,10 +207,16 @@ defmodule Geo.Turf.Measure do
   """
   def centroid(geometry) do
     assert_wgs84!(geometry)
-    coords = centroid_coords(geometry)
-    len = length(coords)
-    {sum_x, sum_y} = Enum.reduce(coords, {0, 0}, fn {x, y}, {sx, sy} -> {sx + x, sy + y} end)
-    %Geo.Point{coordinates: {sum_x / len, sum_y / len}}
+
+    case centroid_coords(geometry) do
+      [] ->
+        :error
+
+      coords ->
+        len = length(coords)
+        {sum_x, sum_y} = Enum.reduce(coords, {0, 0}, fn {x, y}, {sx, sy} -> {sx + x, sy + y} end)
+        %Geo.Point{coordinates: {sum_x / len, sum_y / len}}
+    end
   end
 
   defp centroid_coords(%Geo.Point{coordinates: coord}), do: [coord]
@@ -225,13 +233,16 @@ defmodule Geo.Turf.Measure do
   defp centroid_coords(%Geo.GeometryCollection{geometries: geoms}),
     do: Enum.flat_map(geoms, &centroid_coords/1)
 
+  defp open_ring([]), do: []
+
   defp open_ring([first | _] = ring) do
     if List.last(ring) == first, do: Enum.drop(ring, -1), else: ring
   end
 
-  @spec center(Geo.geometry()) :: Geo.Point.t()
+  @spec center(Geo.geometry()) :: Geo.Point.t() | :error
   @doc """
-  Find the center of a `Geo.geometry()` item and give us a `Geo.Point`
+  Finds the center of a `Geo.geometry()` bounding box and returns a `Geo.Point`.
+  Returns `:error` when the geometry contains no coordinates.
 
   ## Examples
 
@@ -241,23 +252,33 @@ defmodule Geo.Turf.Measure do
   """
   def center(geometry) when is_map(geometry) do
     assert_wgs84!(geometry)
-    {min_x, min_y, max_x, max_y} = bbox(geometry)
 
-    if is_integer(min_x) && is_integer(min_y) && is_integer(max_x) && is_integer(max_y) do
-      %Geo.Point{
-        coordinates: {
-          round((min_x + max_x) / 2),
-          round((min_y + max_y) / 2)
-        }
-      }
-    else
-      %Geo.Point{
-        coordinates: {
-          (min_x + max_x) / 2,
-          (min_y + max_y) / 2
-        }
-      }
+    case bbox(geometry) do
+      :error ->
+        :error
+
+      {min_x, min_y, max_x, max_y} ->
+        center_from_bounds({min_x, min_y, max_x, max_y})
     end
+  end
+
+  defp center_from_bounds({min_x, min_y, max_x, max_y})
+       when is_integer(min_x) and is_integer(min_y) and is_integer(max_x) and is_integer(max_y) do
+    %Geo.Point{
+      coordinates: {
+        round((min_x + max_x) / 2),
+        round((min_y + max_y) / 2)
+      }
+    }
+  end
+
+  defp center_from_bounds({min_x, min_y, max_x, max_y}) do
+    %Geo.Point{
+      coordinates: {
+        (min_x + max_x) / 2,
+        (min_y + max_y) / 2
+      }
+    }
   end
 
   @spec close_to(Geo.Point.t(), Geo.Point.t(), number(), Math.length_unit()) :: boolean()
@@ -327,6 +348,7 @@ defmodule Geo.Turf.Measure do
   MultiPolygon ring, and GeometryCollection child path contribute to the
   result. Separate paths are measured independently and are never joined.
   Point and MultiPoint geometries contribute no length.
+  Empty geometries return `0`.
 
   ## Examples
 

@@ -131,6 +131,62 @@ defmodule Geo.Test.MeasureTest do
     assert M.centroid(multiline) == %Geo.Point{coordinates: {6.0, 5.0}}
   end
 
+  test "centroid returns :error for an empty geometry" do
+    empty_geometries = [
+      %Geo.MultiPoint{coordinates: []},
+      %Geo.LineString{coordinates: []},
+      %Geo.MultiLineString{coordinates: []},
+      %Geo.Polygon{coordinates: []},
+      %Geo.Polygon{coordinates: [[]]},
+      %Geo.MultiPolygon{coordinates: []},
+      %Geo.GeometryCollection{geometries: []}
+    ]
+
+    assert Enum.all?(empty_geometries, &(M.centroid(&1) == :error))
+  end
+
+  test "aggregate measurements return zero for empty geometries" do
+    empty_geometries = [
+      %Geo.MultiPoint{coordinates: []},
+      %Geo.LineString{coordinates: []},
+      %Geo.MultiLineString{coordinates: []},
+      %Geo.Polygon{coordinates: []},
+      %Geo.Polygon{coordinates: [[]]},
+      %Geo.MultiPolygon{coordinates: []},
+      %Geo.GeometryCollection{geometries: []}
+    ]
+
+    assert Enum.all?(empty_geometries, &(M.area(&1) == 0))
+    assert Enum.all?(empty_geometries, &(M.length_of(&1) == 0))
+  end
+
+  test "degenerate paths use their available coordinates" do
+    single_vertex = %Geo.LineString{coordinates: [{1, 2}]}
+    open_ring = %Geo.Polygon{coordinates: [[{0, 0}, {0, 1}]]}
+
+    assert M.length_of(single_vertex) == 0
+    assert M.area(open_ring) == 0
+
+    expected_length =
+      M.distance(%Geo.Point{}, %Geo.Point{coordinates: {0, 1}})
+      |> Math.rounded(2)
+
+    assert M.length_of(open_ring) == expected_length
+    assert M.centroid(single_vertex) == %Geo.Point{coordinates: {1.0, 2.0}}
+  end
+
+  test "center returns :error for a geometry without coordinates" do
+    assert M.center(%Geo.GeometryCollection{geometries: []}) == :error
+  end
+
+  test "collection measurements reject a non-WGS84 child" do
+    collection = %Geo.GeometryCollection{
+      geometries: [%Geo.LineString{coordinates: [{0, 0}, {1, 1}], srid: 3857}]
+    }
+
+    assert_raise ArgumentError, ~r/got SRID 3857/, fn -> M.length_of(collection) end
+  end
+
   @fixture "length/polygon.geojson"
   @fixture "length/route1.geojson"
   @fixture "length/hike.geojson"

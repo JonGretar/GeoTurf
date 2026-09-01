@@ -44,10 +44,10 @@ documented contracts for invalid input.
 
 ### 3. Geometry And Unit Contracts
 
-- [ ] Choose intentional behavior for empty Point collections, lines, rings,
+- [x] Choose intentional behavior for empty Point collections, lines, rings,
       polygons, and GeometryCollections; record the choice here.
-- [ ] Add focused tests for the chosen behavior.
-- [ ] Validate WGS84 recursively where a function accepts a collection.
+- [x] Add focused tests for the chosen behavior.
+- [x] Validate WGS84 recursively where a function accepts a collection.
 - [ ] Centralize valid length and area units with clear errors for unsupported
       atoms.
 - [ ] Decide whether GeoTurf constructors and derived points return `srid:
@@ -111,8 +111,19 @@ documented contracts for invalid input.
   `Math.length_unit/0` documentation warnings remain for track 4.
 - 2026-09-01: Added the canonical length-interface decision to track 4 so the
   Quality Foundations plan covers every `0.5` contract-reset gate in `V1.md`.
+- 2026-09-01: Empty geometries return zero from aggregate area/length
+  measurements, `:error` from point-producing measurements, and `false` from
+  containment predicates. Degenerate paths use their available coordinates:
+  insufficient rings have zero area while existing segments still contribute
+  length.
+- 2026-09-01: WGS84 validation recurses through GeometryCollection children and
+  list members, including when a collection is empty.
+- 2026-09-01: The geometry/SRID slice passed formatting, tests (69 tests,
+  29 doctests), Coveralls (95.6%), Dialyzer, strict Credo, and docs. The two
+  existing `Math.length_unit/0` documentation warnings remain for track 4.
 
 ## Handoff
 
-Tracks 1 and 2 are complete. Begin track 3 by deciding empty geometry behavior
-for each accepted geometry family, then capture the decisions in focused tests.
+Tracks 1 and 2 and the geometry/SRID portion of track 3 are complete. Continue
+track 3 by centralizing length and area units with explicit unsupported-unit
+errors.

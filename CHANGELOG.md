@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Measure.distance/3` now returns raw geodesic values; callers can use `Math.rounded/2` for display rounding
 - `Measure.close_to/4` uses raw distance and includes points exactly at the maximum threshold
 - `Classification.nearest_point/3` ranks candidates by raw distance
+- Empty geometries now return zero for aggregate measurements, `:error` for point-producing measurements, and `false` for polygon containment
+- WGS84 validation now checks every member of geometry and point collections recursively
 
 ### Fixed
 

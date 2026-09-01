@@ -9,6 +9,7 @@ defmodule Geo.Turf.Helpers do
 
   @doc """
   Create a bounding box for a given `t:Geo.geometry/0`.
+  Returns `:error` when the geometry or coordinate list is empty.
 
   ## Examples
 
@@ -21,15 +22,19 @@ defmodule Geo.Turf.Helpers do
   """
 
   @spec bbox([{number(), number()}] | Geo.geometry()) ::
-          {number(), number(), number(), number()}
+          {number(), number(), number(), number()} | :error
   def bbox(geometries) when is_map(geometries) do
-    flatten_coords(geometries)
-    |> List.foldl(@min_bounds, &bbox_folder/2)
+    geometries
+    |> flatten_coords()
+    |> bbox_coords()
   end
 
   def bbox(geometries) when is_list(geometries) do
-    List.foldl(geometries, @min_bounds, &bbox_folder/2)
+    bbox_coords(geometries)
   end
+
+  defp bbox_coords([]), do: :error
+  defp bbox_coords(coords), do: List.foldl(coords, @min_bounds, &bbox_folder/2)
 
   defp bbox_folder({x, y}, {min_x, min_y, max_x, max_y}) do
     {
@@ -92,11 +97,19 @@ defmodule Geo.Turf.Helpers do
   @doc """
   Raises `ArgumentError` if the geometry's SRID is set to anything other than
   WGS84 (EPSG:4326) or `nil` (which is treated as WGS84). All GeoTurf
-  calculations assume WGS84 coordinates.
+  calculations assume WGS84 coordinates. GeometryCollection children and list
+  members are validated recursively.
   """
   @spec assert_wgs84!(term()) :: :ok
   def assert_wgs84!(%{srid: srid}) when srid not in [nil, 4326] do
     raise ArgumentError, "GeoTurf only supports WGS84 (EPSG:4326), got SRID #{srid}"
+  end
+
+  def assert_wgs84!(%Geo.GeometryCollection{geometries: geometries}),
+    do: assert_wgs84!(geometries)
+
+  def assert_wgs84!(geometries) when is_list(geometries) do
+    Enum.each(geometries, &assert_wgs84!/1)
   end
 
   def assert_wgs84!(_), do: :ok

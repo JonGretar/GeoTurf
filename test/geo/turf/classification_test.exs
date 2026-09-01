@@ -28,6 +28,14 @@ defmodule Geo.Turf.ClassificationTest do
     assert C.point_in_polygon?(%Geo.Point{coordinates: {140, 150}}, @simple_poly) == false
   end
 
+  test "point is outside empty polygons" do
+    point = %Geo.Point{coordinates: {0, 0}}
+
+    refute C.point_in_polygon?(point, %Geo.Polygon{coordinates: []})
+    refute C.point_in_polygon?(point, %Geo.Polygon{coordinates: [[]]})
+    refute C.point_in_polygon?(point, %Geo.MultiPolygon{coordinates: []})
+  end
+
   test "point inside concave polygon" do
     assert C.point_in_polygon?(%Geo.Point{coordinates: {75, 75}}, @concave_poly) == true
   end
@@ -218,6 +226,14 @@ defmodule Geo.Turf.ClassificationTest do
 
   test "nearest_point returns nil for empty list" do
     assert C.nearest_point(%Geo.Point{coordinates: {0, 0}}, []) == nil
+  end
+
+  test "empty point collections still validate WGS84 inputs" do
+    invalid_target = %Geo.Point{coordinates: {0, 0}, srid: 3857}
+    invalid_polygon = %Geo.Polygon{coordinates: [], srid: 3857}
+
+    assert_raise ArgumentError, fn -> C.nearest_point(invalid_target, []) end
+    assert_raise ArgumentError, fn -> C.points_within_polygon([], invalid_polygon) end
   end
 
   test "nearest_point returns the only point in a singleton list" do

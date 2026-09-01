@@ -17,6 +17,21 @@ defmodule Geo.Turf.Helpers.Test do
     assert H.bbox(@collection) == {-10, 0, 10, 10}
   end
 
+  test "Bounding Box returns :error without coordinates" do
+    assert H.bbox(%Geo.GeometryCollection{geometries: []}) == :error
+    assert H.bbox([]) == :error
+  end
+
+  test "WGS84 validation recurses through geometry collections and lists" do
+    invalid = %Geo.Point{coordinates: {0, 0}, srid: 3857}
+
+    assert_raise ArgumentError, ~r/got SRID 3857/, fn ->
+      H.assert_wgs84!(%Geo.GeometryCollection{geometries: [invalid]})
+    end
+
+    assert_raise ArgumentError, ~r/got SRID 3857/, fn -> H.assert_wgs84!([invalid]) end
+  end
+
   test "Flatten Coordinates" do
     assert H.flatten_coords(@triangle) == [{-10, 10}, {0, 0}, {10, 10}]
     assert H.flatten_coords(@triangle_float) == [{-10.0, 10.0}, {0.0, 0.0}, {10.0, 10.0}]
