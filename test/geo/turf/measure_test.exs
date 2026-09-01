@@ -61,6 +61,12 @@ defmodule Geo.Test.MeasureTest do
     assert M.close_to(origin, point, threshold, :meters)
   end
 
+  test "measurements reject unsupported length units" do
+    assert_raise ArgumentError, "unsupported length unit: :parsecs", fn ->
+      M.distance(%Geo.Point{}, %Geo.Point{coordinates: {0, 1}}, :parsecs)
+    end
+  end
+
   test "destination", _ctx do
     start_point = %Geo.Point{coordinates: {-75.0, 39.0}}
 

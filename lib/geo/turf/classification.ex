@@ -107,7 +107,7 @@ defmodule Geo.Turf.Classification do
   ## Options
 
   * `:units` - unit for distance calculation, defaults to `:kilometers`.
-    See `Geo.Turf.Math.length_unit/0` for valid values.
+    See `t:Geo.Turf.Math.length_unit/0` for valid values.
 
   ## Examples
 

@@ -73,6 +73,16 @@ defmodule Geo.Turf.Math.Test do
     assert M.convert_area(100, :metres, :feet) == 1076.3910417
   end
 
+  test "unsupported units raise clear errors" do
+    assert_raise ArgumentError, "unsupported length unit: :parsecs", fn ->
+      M.convert_length(1, :parsecs, :meters)
+    end
+
+    assert_raise ArgumentError, "unsupported area unit: :nauticalmiles", fn ->
+      M.convert_area(1, :meters, :nauticalmiles)
+    end
+  end
+
   test "modulo" do
     assert M.mod(10, 1) == 0
     assert M.mod(10.0, 2.0) == 0.0

@@ -48,7 +48,7 @@ documented contracts for invalid input.
       polygons, and GeometryCollections; record the choice here.
 - [x] Add focused tests for the chosen behavior.
 - [x] Validate WGS84 recursively where a function accepts a collection.
-- [ ] Centralize valid length and area units with clear errors for unsupported
+- [x] Centralize valid length and area units with clear errors for unsupported
       atoms.
 - [ ] Decide whether GeoTurf constructors and derived points return `srid:
 4326` or preserve the current nil convention; apply it consistently.
@@ -121,9 +121,15 @@ documented contracts for invalid input.
 - 2026-09-01: The geometry/SRID slice passed formatting, tests (69 tests,
   29 doctests), Coveralls (95.6%), Dialyzer, strict Credo, and docs. The two
   existing `Math.length_unit/0` documentation warnings remain for track 4.
+- 2026-09-01: Length and area unit factors are centralized in `Math`; all
+  consumers raise explicit `ArgumentError` messages for unsupported units.
+  Public length and area unit types now match the accepted factor sets.
+- 2026-09-01: The unit-contract slice passed formatting, tests (71 tests,
+  29 doctests), Coveralls (94.1%), Dialyzer, strict Credo, and docs without
+  warnings.
 
 ## Handoff
 
-Tracks 1 and 2 and the geometry/SRID portion of track 3 are complete. Continue
-track 3 by centralizing length and area units with explicit unsupported-unit
-errors.
+Tracks 1 and 2 and all but the output-SRID decision in track 3 are complete.
+Choose and apply one SRID convention for newly constructed and derived
+geometries.

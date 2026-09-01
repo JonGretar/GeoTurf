@@ -22,7 +22,8 @@ defmodule Geo.Turf.Transformation do
   * `opts` - a keyword list of options
 
   ## Options
-  * `:units` - the unit of the radius, defaults to `:kilometers`. see `Geo.Turf.Math.length_unit/0`
+  * `:units` - the unit of the radius, defaults to `:kilometers`.
+    See `t:Geo.Turf.Math.length_unit/0` for valid values.
   * `:steps` - the number of steps to use to create the circle, defaults to `64`
     * `steps` must be a positive integer or an `ArgumentError` will be raised
     * Note the higher the number of steps, the smoother the circle will be, but the more points it will have

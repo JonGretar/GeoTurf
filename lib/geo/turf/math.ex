@@ -3,10 +3,30 @@ defmodule Geo.Turf.Math do
   All sorts of mathematical functions
   """
 
+  @typedoc "British-spelling SI length units."
   @type si_length_uk :: :meters | :kilometers | :centimeters | :millimeters
+  @typedoc "Alternative-spelling SI length units."
   @type si_length_us :: :metres | :kilometres | :centimetres | :millimetres
+  @typedoc "Imperial and nautical length units."
   @type imperial_length :: :miles | :nauticalmiles | :inches | :yards | :feet
-  @type length_unit :: si_length_uk | si_length_us | imperial_length
+  @typedoc "Unit accepted by geodesic length and distance calculations."
+  @type length_unit :: si_length_uk | si_length_us | imperial_length | :degrees | :radians
+
+  @typedoc "Unit accepted by area conversions."
+  @type area_unit ::
+          :acres
+          | :centimeters
+          | :centimetres
+          | :feet
+          | :inches
+          | :kilometers
+          | :kilometres
+          | :meters
+          | :metres
+          | :miles
+          | :millimeters
+          | :millimetres
+          | :yards
 
   @earth_radius 6_371_008.8
   @factors %{
@@ -61,16 +81,37 @@ defmodule Geo.Turf.Math do
   @tau :math.pi() * 2
 
   @doc false
-  @spec factor(:atom) :: number()
-  def factor(factor), do: @factors[factor]
+  @spec factor(length_unit()) :: number()
+  def factor(unit), do: fetch_factor!(@factors, unit, :length)
 
   @doc false
-  @spec units_factors(:atom) :: number()
-  def units_factors(factor), do: @units_factors[factor]
+  @spec units_factors(length_unit()) :: number()
+  def units_factors(unit), do: fetch_factor!(@units_factors, unit, :length)
 
   @doc false
-  @spec area_factors(:atom) :: number()
-  def area_factors(factor), do: @area_factors[factor]
+  @spec area_factors(area_unit()) :: number()
+  def area_factors(unit), do: fetch_factor!(@area_factors, unit, :area)
+
+  @doc false
+  @spec length_unit!(term()) :: length_unit()
+  def length_unit!(unit) do
+    fetch_factor!(@factors, unit, :length)
+    unit
+  end
+
+  @doc false
+  @spec area_unit!(term()) :: area_unit()
+  def area_unit!(unit) do
+    fetch_factor!(@area_factors, unit, :area)
+    unit
+  end
+
+  defp fetch_factor!(factors, unit, kind) do
+    case Map.fetch(factors, unit) do
+      {:ok, factor} -> factor
+      :error -> raise ArgumentError, "unsupported #{kind} unit: #{inspect(unit)}"
+    end
+  end
 
   @doc false
   @spec earth_radius() :: number()
@@ -79,12 +120,12 @@ defmodule Geo.Turf.Math do
 
   @spec radians_to_length(number(), length_unit) :: number()
   def radians_to_length(radians, unit \\ :kilometers) when is_number(radians) do
-    radians * @factors[unit]
+    radians * factor(unit)
   end
 
   @spec length_to_radians(number(), length_unit) :: float()
   def length_to_radians(length, unit \\ :kilometers) when is_number(length) do
-    length / @factors[unit]
+    length / factor(unit)
   end
 
   @spec length_to_degrees(number(), length_unit) :: float()
@@ -152,9 +193,9 @@ defmodule Geo.Turf.Math do
     radians_to_length(length_to_radians(length, from), to)
   end
 
-  @spec convert_area(number, length_unit, length_unit) :: number
+  @spec convert_area(number, area_unit, area_unit) :: number
   def convert_area(area, from \\ :meters, to \\ :kilometers) when is_number(area) and area >= 0 do
-    area / @area_factors[from] * @area_factors[to]
+    area / area_factors(from) * area_factors(to)
   end
 
   @doc """
