@@ -56,6 +56,8 @@ documented contracts for invalid input.
 ### 4. Delivery Contract
 
 - [ ] Correct `:unit` / `:units` documentation, types, and tests.
+- [ ] Decide the canonical public length interface and compatibility path from
+      `length_of/2`, as required by the `0.5` contract reset.
 - [ ] Declare an Elixir support floor compatible with all language features in
       the implementation.
 - [ ] Make CI run formatting and strict Credo in addition to compile, test,
@@ -72,6 +74,8 @@ documented contracts for invalid input.
       documented.
 - [ ] Circle and destination options agree across implementation, types, docs,
       and tests.
+- [ ] The canonical length interface and any `length_of/2` compatibility path
+      are documented and tested.
 - [ ] Local and CI quality checks enforce the same required checks.
 
 ## Verification
@@ -105,6 +109,8 @@ documented contracts for invalid input.
 - 2026-09-01: Track 2 passed formatting, tests (60 tests, 29 doctests),
   Coveralls (89.8%), Dialyzer, strict Credo, and docs. The two existing
   `Math.length_unit/0` documentation warnings remain for track 4.
+- 2026-09-01: Added the canonical length-interface decision to track 4 so the
+  Quality Foundations plan covers every `0.5` contract-reset gate in `V1.md`.
 
 ## Handoff
 
