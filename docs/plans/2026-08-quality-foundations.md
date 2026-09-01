@@ -1,8 +1,8 @@
 # Quality Foundations
 
-State: `Ready`
+State: `In progress`
 Priority: `P0`
-Owner: `Unassigned`
+Owner: `Delta`
 Dependencies: `None`
 
 ## Outcome
@@ -90,8 +90,9 @@ documented contracts for invalid input.
   work-system adapter.
 - 2026-08-31: The work is split into four independently verifiable tracks,
   but only one should be in progress at a time until ownership is explicit.
+- 2026-09-01: Delta started track 1, Topology-Preserving Length.
 
 ## Handoff
 
-No implementation has started. Begin with checklist 1: add a failing
-MultiLineString length regression test that demonstrates the fictitious join.
+Track 1 is in progress. Begin with a failing MultiLineString length regression
+test that demonstrates the fictitious join.
