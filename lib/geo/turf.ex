@@ -8,6 +8,28 @@ defmodule Geo.Turf do
 
   *At the moment the library is in early development mode. The API could, and propably will, change on any moment.*
 
+  ## WGS84 and SRID metadata
+
+  GeoTurf's geodesic calculations require WGS84 longitude/latitude coordinates
+  (EPSG:4326). Public geodesic functions accept `Geo` structs whose `srid` is
+  either `4326` or `nil`.
+
+  `nil` does not mean that GeoTurf detected WGS84. It means that the caller is
+  asserting that the coordinates are WGS84, matching the default metadata on
+  `Geo` structs. GeoTurf validates declared SRIDs but cannot infer a coordinate
+  reference system from coordinate values.
+
+  Geometries with another declared SRID must normally be reprojected before
+  use. If coordinates are already WGS84 and only their metadata is stale,
+  correct the individual geometry explicitly:
+
+      geometry = %{geometry | srid: 4326}
+
+  `Geo.Turf.Helpers.assert_wgs84!/1` applies this validation recursively to
+  GeometryCollection children and lists. There is deliberately no global
+  validation bypass, because disabling the guard would allow projected
+  coordinates to produce plausible but incorrect geodesic results.
+
   ## Usage
 
   The library can perform functions on [Geo](https://github.com/bryanjos/geo) objects as well as basic mathematic functions useful in spatial analysis. At the moment Geo.Turf expects WGS84 coordinates.

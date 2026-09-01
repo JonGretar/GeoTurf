@@ -97,14 +97,25 @@ defmodule Geo.Turf.Helpers do
     do: (acc ++ Enum.map(geom, &flatten_coords/1)) |> List.flatten()
 
   @doc """
-  Raises `ArgumentError` if the geometry's SRID is set to anything other than
-  WGS84 (EPSG:4326) or `nil` (which is treated as WGS84). All GeoTurf
-  calculations assume WGS84 coordinates. GeometryCollection children and list
-  members are validated recursively.
+  Verifies the declared SRID for GeoTurf's WGS84 calculations.
+
+  An SRID of `4326` is accepted. `nil` is also accepted for compatibility with
+  `Geo`'s default structs, but means that the caller is asserting that the
+  coordinates are WGS84; GeoTurf cannot infer a coordinate reference system
+  from coordinate values alone.
+
+  Any other declared SRID raises `ArgumentError`. Reproject those coordinates
+  before passing them to GeoTurf. If the coordinates are already WGS84 and only
+  the metadata is stale, correct it explicitly with
+  `%{geometry | srid: 4326}`. GeometryCollection children and list members are
+  validated recursively.
   """
   @spec assert_wgs84!(term()) :: :ok
   def assert_wgs84!(%{srid: srid}) when srid not in [nil, 4326] do
-    raise ArgumentError, "GeoTurf only supports WGS84 (EPSG:4326), got SRID #{srid}"
+    raise ArgumentError,
+          "GeoTurf requires WGS84 (EPSG:4326) coordinates, but received SRID #{inspect(srid)}. " <>
+            "Reproject the geometry before calling GeoTurf. If its coordinates are already WGS84 " <>
+            "and only the metadata is stale, explicitly set it with %{geometry | srid: 4326}."
   end
 
   def assert_wgs84!(%Geo.GeometryCollection{geometries: geometries}),

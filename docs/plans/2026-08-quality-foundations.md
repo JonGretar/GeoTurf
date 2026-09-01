@@ -155,6 +155,11 @@ documented contracts for invalid input.
   [33495281396](https://github.com/JonGretar/GeoTurf/actions/runs/33495281396)
   passed formatting, strict Credo, docs, Dialyzer, Elixir 1.15 / OTP 26 tests,
   and Elixir 1.18 / OTP 28 tests. Quality Foundations is complete.
+- 2026-09-01: Follow-up documentation makes the SRID metadata contract explicit
+  in README and HexDocs: `nil` means the caller asserts WGS84, incompatible
+  coordinates require reprojection, and stale metadata can be corrected with
+  `%{geometry | srid: 4326}`. The guard remains mandatory. `mix precommit`,
+  docs, and Coveralls passed with 76 tests, 29 doctests, and 94.5% coverage.
 
 ## Handoff
 

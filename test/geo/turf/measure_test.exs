@@ -211,7 +211,7 @@ defmodule Geo.Test.MeasureTest do
       geometries: [%Geo.LineString{coordinates: [{0, 0}, {1, 1}], srid: 3857}]
     }
 
-    assert_raise ArgumentError, ~r/got SRID 3857/, fn -> M.length_of(collection) end
+    assert_raise ArgumentError, ~r/received SRID 3857/, fn -> M.length_of(collection) end
   end
 
   @fixture "length/polygon.geojson"

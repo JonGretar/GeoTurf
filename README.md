@@ -11,6 +11,28 @@ GeoTurf supports Elixir 1.15 and later. CI verifies the minimum supported
 combination of Elixir 1.15 / OTP 26 and the current Elixir 1.18 / OTP 28
 combination.
 
+## WGS84 and SRID metadata
+
+GeoTurf's geodesic calculations require WGS84 longitude/latitude coordinates
+(EPSG:4326). They accept `Geo` structs with `srid: 4326` or `srid: nil`.
+
+An SRID of `nil` does not mean GeoTurf detected WGS84; it means the caller is
+asserting that the coordinates are WGS84. This supports `Geo`'s default
+structs, while explicitly declared incompatible SRIDs are rejected. Collections
+are checked recursively.
+
+Normally, geometries in another coordinate reference system must be
+reprojected before use. If the coordinates are already WGS84 and only the
+metadata is stale, correct that geometry explicitly:
+
+```elixir
+geometry = %{geometry | srid: 4326}
+```
+
+There is deliberately no global validation bypass. Disabling the guard could
+allow projected coordinates to produce plausible but incorrect distances,
+areas, or predicates.
+
 ## Usage
 
 All functions accept and return standard `Geo` structs.

@@ -29,11 +29,16 @@ defmodule Geo.Turf.Helpers.Test do
   test "WGS84 validation recurses through geometry collections and lists" do
     invalid = %Geo.Point{coordinates: {0, 0}, srid: 3857}
 
-    assert_raise ArgumentError, ~r/got SRID 3857/, fn ->
-      H.assert_wgs84!(%Geo.GeometryCollection{geometries: [invalid]})
-    end
+    error =
+      assert_raise ArgumentError, fn ->
+        H.assert_wgs84!(%Geo.GeometryCollection{geometries: [invalid]})
+      end
 
-    assert_raise ArgumentError, ~r/got SRID 3857/, fn -> H.assert_wgs84!([invalid]) end
+    assert error.message =~ "received SRID 3857"
+    assert error.message =~ "Reproject the geometry"
+    assert error.message =~ "%{geometry | srid: 4326}"
+
+    assert_raise ArgumentError, fn -> H.assert_wgs84!([invalid]) end
   end
 
   test "Flatten Coordinates" do
