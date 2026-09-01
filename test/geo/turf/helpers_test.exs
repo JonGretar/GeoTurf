@@ -14,6 +14,7 @@ defmodule Geo.Turf.Helpers.Test do
     assert H.bbox(@square) == {0, 0, 10, 10}
     assert H.bbox(@square_float) == {0.0, 0.0, 10.0, 10.0}
     assert H.bbox(@triangle) == {-10, 0, 10, 10}
+    assert H.bbox(@collection) == {-10, 0, 10, 10}
   end
 
   test "Flatten Coordinates" do

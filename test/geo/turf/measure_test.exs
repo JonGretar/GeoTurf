@@ -108,6 +108,14 @@ defmodule Geo.Test.MeasureTest do
     assert_in_delta y, 45.76051644154402, 1.0e-10
   end
 
+  test "centroid aggregates vertices from separate MultiLineString members" do
+    multiline = %Geo.MultiLineString{
+      coordinates: [[{0, 0}, {2, 0}], [{10, 10}, {12, 10}]]
+    }
+
+    assert M.centroid(multiline) == %Geo.Point{coordinates: {6.0, 5.0}}
+  end
+
   @fixture "length/polygon.geojson"
   @fixture "length/route1.geojson"
   @fixture "length/hike.geojson"
@@ -117,5 +125,47 @@ defmodule Geo.Test.MeasureTest do
     assert M.length_of(ctx.hike, :feet) == 10_007.75
     assert M.length_of(ctx.route1, :feet) == 1_068_691.81
     assert M.length_of(ctx.polygon, :feet) == 18_363.92
+  end
+
+  @fixture separated_multiline: "length/separated-multiline.geojson"
+  test "length does not join separate MultiLineString members", ctx do
+    assert M.length_of(ctx.separated_multiline) == 222.39
+  end
+
+  @fixture polygon_with_hole: "length/polygon-with-hole.geojson"
+  test "length measures polygon rings independently", ctx do
+    %Geo.Polygon{coordinates: rings} = ctx.polygon_with_hole
+
+    expected =
+      rings
+      |> Enum.map(&M.length_of(%Geo.LineString{coordinates: &1}))
+      |> Enum.sum()
+
+    assert_in_delta M.length_of(ctx.polygon_with_hole), expected, 0.02
+  end
+
+  @fixture separated_multipolygon: "length/separated-multipolygon.geojson"
+  test "length measures MultiPolygon rings independently", ctx do
+    %Geo.MultiPolygon{coordinates: polygons} = ctx.separated_multipolygon
+
+    expected =
+      polygons
+      |> Enum.flat_map(& &1)
+      |> Enum.map(&M.length_of(%Geo.LineString{coordinates: &1}))
+      |> Enum.sum()
+
+    assert_in_delta M.length_of(ctx.separated_multipolygon), expected, 0.02
+  end
+
+  @fixture separated_geometry_collection: "length/separated-geometry-collection.geojson"
+  test "length measures GeometryCollection children independently", ctx do
+    %Geo.GeometryCollection{geometries: geometries} = ctx.separated_geometry_collection
+
+    expected =
+      geometries
+      |> Enum.map(&M.length_of/1)
+      |> Enum.sum()
+
+    assert_in_delta M.length_of(ctx.separated_geometry_collection), expected, 0.02
   end
 end

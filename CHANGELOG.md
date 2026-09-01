@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - `Measure.along/3` now geodesically interpolates mid-segment points instead of snapping to the nearest vertex
+- `Measure.length_of/2` now measures independent geometry paths without adding fictitious segments between them
 
 ## [0.4.0] - 2026-04-12
 

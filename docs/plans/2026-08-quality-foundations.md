@@ -22,13 +22,13 @@ documented contracts for invalid input.
 
 ### 1. Topology-Preserving Length
 
-- [ ] Add failing fixtures for separated `MultiLineString` members, polygon
+- [x] Add failing fixtures for separated `MultiLineString` members, polygon
       holes, MultiPolygon members, and GeometryCollection members.
-- [ ] Replace the flattened traversal used by `length_of/2` with a traversal
+- [x] Replace the flattened traversal used by `length_of/2` with a traversal
       that yields independent coordinate paths.
-- [ ] Keep bbox and centroid coordinate aggregation behavior explicit and
+- [x] Keep bbox and centroid coordinate aggregation behavior explicit and
       covered by their own tests.
-- [ ] Update the module documentation to state which geometry paths contribute
+- [x] Update the module documentation to state which geometry paths contribute
       to length.
 
 ### 2. Raw Geodesic Metrics
@@ -65,7 +65,7 @@ documented contracts for invalid input.
 
 ## Acceptance Criteria
 
-- [ ] `length_of/2` never measures an invented segment between independent
+- [x] `length_of/2` never measures an invented segment between independent
       coordinate paths.
 - [ ] Threshold and nearest-point behavior use raw geodesic values.
 - [ ] Empty/invalid geometry and unit behavior are intentional, tested, and
@@ -91,8 +91,14 @@ documented contracts for invalid input.
 - 2026-08-31: The work is split into four independently verifiable tracks,
   but only one should be in progress at a time until ownership is explicit.
 - 2026-09-01: Delta started track 1, Topology-Preserving Length.
+- 2026-09-01: Length sums LineString paths, polygon rings, and collection child
+  paths independently. Point and MultiPoint geometries contribute no length;
+  bbox and centroid continue aggregating all applicable coordinates.
+- 2026-09-01: Track 1 passed formatting, tests (57 tests, 29 doctests),
+  Coveralls (89.8%), Dialyzer, strict Credo, and docs. Docs retain two existing
+  warnings about private `Math.length_unit/0` references outside this track.
 
 ## Handoff
 
-Track 1 is in progress. Begin with a failing MultiLineString length regression
-test that demonstrates the fictitious join.
+Track 1 is complete. Begin track 2 with a failing threshold test demonstrating
+that display rounding changes `close_to/4` near its maximum distance.

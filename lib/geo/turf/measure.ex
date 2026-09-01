@@ -2,7 +2,7 @@ defmodule Geo.Turf.Measure do
   @moduledoc """
   A collection of measurement related tools
   """
-  import Geo.Turf.Helpers, only: [bbox: 1, flatten_coords: 1, assert_wgs84!: 1]
+  import Geo.Turf.Helpers, only: [bbox: 1, assert_wgs84!: 1]
   alias Geo.Turf.Math
 
   @type units :: {:units, Math.length_unit()}
@@ -321,6 +321,11 @@ defmodule Geo.Turf.Measure do
   @doc """
   Takes a `t:Geo.geometry()` and measures its length in the specified units.
 
+  LineString paths and every independent MultiLineString member, polygon ring,
+  MultiPolygon ring, and GeometryCollection child path contribute to the
+  result. Separate paths are measured independently and are never joined.
+  Point and MultiPoint geometries contribute no length.
+
   ## Examples
 
       iex> %Geo.LineString{coordinates: [{-23.621,64.769},{-23.629,64.766},{-23.638,64.766}]}
@@ -331,10 +336,22 @@ defmodule Geo.Turf.Measure do
     assert_wgs84!(feature)
 
     feature
-    |> flatten_coords()
-    |> walk_length(unit, 0)
+    |> coordinate_paths()
+    |> Enum.reduce(0, fn path, length -> walk_length(path, unit, length) end)
     |> Math.rounded(2)
   end
+
+  defp coordinate_paths(%Geo.Point{}), do: []
+  defp coordinate_paths(%Geo.MultiPoint{}), do: []
+  defp coordinate_paths(%Geo.LineString{coordinates: coordinates}), do: [coordinates]
+  defp coordinate_paths(%Geo.MultiLineString{coordinates: paths}), do: paths
+  defp coordinate_paths(%Geo.Polygon{coordinates: rings}), do: rings
+
+  defp coordinate_paths(%Geo.MultiPolygon{coordinates: polygons}),
+    do: Enum.flat_map(polygons, & &1)
+
+  defp coordinate_paths(%Geo.GeometryCollection{geometries: geometries}),
+    do: Enum.flat_map(geometries, &coordinate_paths/1)
 
   @doc """
   Takes in an **origin** `%Geo.Point{}` and calculates the destination of a new `%Geo.Point{}` at a given distance and bearing away from the **origin** point.
