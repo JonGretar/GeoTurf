@@ -22,6 +22,10 @@ defmodule Geo.Turf.Helpers.Test do
     assert H.bbox([]) == :error
   end
 
+  test "Bounding Box polygon has an explicit WGS84 SRID" do
+    assert %Geo.Polygon{srid: 4326} = H.bbox_polygon({0, 0, 1, 1})
+  end
+
   test "WGS84 validation recurses through geometry collections and lists" do
     invalid = %Geo.Point{coordinates: {0, 0}, srid: 3857}
 

@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Empty geometries now return zero for aggregate measurements, `:error` for point-producing measurements, and `false` for polygon containment
 - WGS84 validation now checks every member of geometry and point collections recursively
 - Length and area APIs now reject unsupported units with explicit `ArgumentError` messages
+- Newly constructed WGS84 geometry and measurement-derived points now carry `srid: 4326`; coordinate-only transformations preserve the source SRID
 
 ### Fixed
 

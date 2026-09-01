@@ -49,20 +49,22 @@ defmodule Geo.Turf.Helpers do
   Takes a bounding box tuple and returns it as a `%Geo.Polygon{}`.
 
   The ring winds: SW → SE → NE → NW → SW.
+  The returned polygon has the WGS84 SRID `4326`.
 
   ## Examples
 
       iex> Geo.Turf.Helpers.bbox_polygon({0, 0, 10, 10})
-      %Geo.Polygon{coordinates: [[{0, 0}, {10, 0}, {10, 10}, {0, 10}, {0, 0}]]}
+      %Geo.Polygon{coordinates: [[{0, 0}, {10, 0}, {10, 10}, {0, 10}, {0, 0}]], srid: 4326}
 
       iex> Geo.Turf.Helpers.bbox_polygon({-180, -90, 180, 90})
-      %Geo.Polygon{coordinates: [[{-180, -90}, {180, -90}, {180, 90}, {-180, 90}, {-180, -90}]]}
+      %Geo.Polygon{coordinates: [[{-180, -90}, {180, -90}, {180, 90}, {-180, 90}, {-180, -90}]], srid: 4326}
 
   """
   @spec bbox_polygon({number(), number(), number(), number()}) :: Geo.Polygon.t()
   def bbox_polygon({west, south, east, north}) do
     %Geo.Polygon{
-      coordinates: [[{west, south}, {east, south}, {east, north}, {west, north}, {west, south}]]
+      coordinates: [[{west, south}, {east, south}, {east, north}, {west, north}, {west, south}]],
+      srid: 4326
     }
   end
 

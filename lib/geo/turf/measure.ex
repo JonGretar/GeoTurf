@@ -1,6 +1,8 @@
 defmodule Geo.Turf.Measure do
   @moduledoc """
-  A collection of measurement related tools
+  A collection of measurement related tools.
+
+  Newly calculated points use the explicit WGS84 SRID `4326`.
   """
   import Geo.Turf.Helpers, only: [bbox: 1, assert_wgs84!: 1]
   alias Geo.Turf.Math
@@ -16,7 +18,7 @@ defmodule Geo.Turf.Measure do
 
       iex> %Geo.LineString{coordinates: [{-23.621,64.769},{-23.629,64.766},{-23.638,64.766}]}
       ...>   |> Geo.Turf.Measure.along(2, :kilometers)
-      %Geo.Point{coordinates: {-23.638,64.766}}
+      %Geo.Point{coordinates: {-23.638,64.766}, srid: 4326}
 
       iex> Geo.Turf.Measure.along(%Geo.LineString{coordinates: []}, 1, :kilometers)
       :error
@@ -41,7 +43,9 @@ defmodule Geo.Turf.Measure do
     end
   end
 
-  defp walk_along([{x, y}], _distance, _unit, _acc), do: %Geo.Point{coordinates: {x, y}}
+  defp walk_along([{x, y}], _distance, _unit, _acc),
+    do: %Geo.Point{coordinates: {x, y}, srid: 4326}
+
   defp walk_along([], _distance, _unit, _acc), do: :error
 
   @spec along_midpoint(Geo.LineString.t()) :: Geo.Point.t() | :error
@@ -53,7 +57,7 @@ defmodule Geo.Turf.Measure do
       iex> %Geo.LineString{coordinates: [{-23.621,64.769},{-23.629,64.766},{-23.638,64.766}]}
       ...>   |> Geo.Turf.Measure.along_midpoint()
       ...>   |> Geo.Turf.Math.approx(4)
-      %Geo.Point{coordinates: {-23.6284, 64.7662}}
+      %Geo.Point{coordinates: {-23.6284, 64.7662}, srid: 4326}
   """
   def along_midpoint(%Geo.LineString{} = line) do
     along(line, length_of(line) / 2)
@@ -196,13 +200,13 @@ defmodule Geo.Turf.Measure do
   ## Examples
 
       iex> Geo.Turf.Measure.centroid(%Geo.Polygon{coordinates: [[{-81, 41}, {-88, 36}, {-84, 31}, {-80, 33}, {-77, 39}, {-81, 41}]]})
-      %Geo.Point{coordinates: {-82.0, 36.0}}
+      %Geo.Point{coordinates: {-82.0, 36.0}, srid: 4326}
 
       iex> Geo.Turf.Measure.centroid(%Geo.LineString{coordinates: [{0, 0}, {4, 0}, {4, 4}]})
-      %Geo.Point{coordinates: {2.6666666666666665, 1.3333333333333333}}
+      %Geo.Point{coordinates: {2.6666666666666665, 1.3333333333333333}, srid: 4326}
 
       iex> Geo.Turf.Measure.centroid(%Geo.Point{coordinates: {1.0, 2.0}})
-      %Geo.Point{coordinates: {1.0, 2.0}}
+      %Geo.Point{coordinates: {1.0, 2.0}, srid: 4326}
 
   """
   def centroid(geometry) do
@@ -215,7 +219,7 @@ defmodule Geo.Turf.Measure do
       coords ->
         len = length(coords)
         {sum_x, sum_y} = Enum.reduce(coords, {0, 0}, fn {x, y}, {sx, sy} -> {sx + x, sy + y} end)
-        %Geo.Point{coordinates: {sum_x / len, sum_y / len}}
+        %Geo.Point{coordinates: {sum_x / len, sum_y / len}, srid: 4326}
     end
   end
 
@@ -247,7 +251,7 @@ defmodule Geo.Turf.Measure do
   ## Examples
 
       iex> Geo.Turf.Measure.center(%Geo.Polygon{coordinates: [{0,0}, {0,10}, {10,10}, {10,0}]})
-      %Geo.Point{ coordinates: {5, 5} }
+      %Geo.Point{coordinates: {5, 5}, srid: 4326}
 
   """
   def center(geometry) when is_map(geometry) do
@@ -268,7 +272,8 @@ defmodule Geo.Turf.Measure do
       coordinates: {
         round((min_x + max_x) / 2),
         round((min_y + max_y) / 2)
-      }
+      },
+      srid: 4326
     }
   end
 
@@ -277,7 +282,8 @@ defmodule Geo.Turf.Measure do
       coordinates: {
         (min_x + max_x) / 2,
         (min_y + max_y) / 2
-      }
+      },
+      srid: 4326
     }
   end
 
@@ -396,7 +402,7 @@ defmodule Geo.Turf.Measure do
 
       iex> %Geo.Point{coordinates: {-75.343, 39.984}}
       ...>   |> Geo.Turf.Measure.destination(100, 180, unit: :kilometers)
-      %Geo.Point{coordinates: {-75.343, 39.08467963627546}}
+      %Geo.Point{coordinates: {-75.343, 39.08467963627546}, srid: 4326}
   """
   @spec destination(
           origin :: Geo.Point.t(),
@@ -432,7 +438,8 @@ defmodule Geo.Turf.Measure do
       coordinates: {
         Math.radians_to_degrees(lon2),
         Math.radians_to_degrees(lat2)
-      }
+      },
+      srid: 4326
     }
   end
 

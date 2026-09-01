@@ -175,6 +175,7 @@ defmodule Geo.Turf.Math do
 
   @doc """
   Rounds the coordinates of a Point to the given precision. Useful for approximate comparisons in tests.
+  The returned Point preserves the source Point's SRID and properties.
 
   ## Examples
 
@@ -183,8 +184,8 @@ defmodule Geo.Turf.Math do
 
   """
   @spec approx(Geo.Point.t(), non_neg_integer()) :: Geo.Point.t()
-  def approx(%Geo.Point{coordinates: {x, y}}, precision \\ 4) do
-    %Geo.Point{coordinates: {rounded(x, precision), rounded(y, precision)}}
+  def approx(%Geo.Point{coordinates: {x, y}} = point, precision \\ 4) do
+    %{point | coordinates: {rounded(x, precision), rounded(y, precision)}}
   end
 
   @spec convert_length(number, length_unit, length_unit) :: number

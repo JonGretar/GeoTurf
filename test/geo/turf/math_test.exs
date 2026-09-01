@@ -56,6 +56,12 @@ defmodule Geo.Turf.Math.Test do
     # t.throws(() => rounded(34.5, -5), 'invalid precision');
   end
 
+  test "approx preserves the source Point SRID" do
+    point = %Geo.Point{coordinates: {1.234, 5.678}, srid: 3857}
+
+    assert %Geo.Point{srid: 3857} = M.approx(point, 2)
+  end
+
   test "convertLength" do
     assert M.convert_length(1000, :meters) == 1
     assert M.convert_length(1, :kilometers, :miles) == 0.621371192237334

@@ -50,7 +50,7 @@ documented contracts for invalid input.
 - [x] Validate WGS84 recursively where a function accepts a collection.
 - [x] Centralize valid length and area units with clear errors for unsupported
       atoms.
-- [ ] Decide whether GeoTurf constructors and derived points return `srid:
+- [x] Decide whether GeoTurf constructors and derived points return `srid:
 4326` or preserve the current nil convention; apply it consistently.
 
 ### 4. Delivery Contract
@@ -70,7 +70,7 @@ documented contracts for invalid input.
 - [x] `length_of/2` never measures an invented segment between independent
       coordinate paths.
 - [x] Threshold and nearest-point behavior use raw geodesic values.
-- [ ] Empty/invalid geometry and unit behavior are intentional, tested, and
+- [x] Empty/invalid geometry and unit behavior are intentional, tested, and
       documented.
 - [ ] Circle and destination options agree across implementation, types, docs,
       and tests.
@@ -127,9 +127,14 @@ documented contracts for invalid input.
 - 2026-09-01: The unit-contract slice passed formatting, tests (71 tests,
   29 doctests), Coveralls (94.1%), Dialyzer, strict Credo, and docs without
   warnings.
+- 2026-09-01: Newly constructed WGS84 geometries and measurement-derived points
+  carry explicit `srid: 4326`. Coordinate-only transformations such as
+  `Math.approx/2` preserve the source geometry's SRID and properties.
+- 2026-09-01: The output-SRID slice passed formatting, tests (74 tests,
+  29 doctests), Coveralls (94.5%), Dialyzer, strict Credo, and docs without
+  warnings. Track 3 is complete.
 
 ## Handoff
 
-Tracks 1 and 2 and all but the output-SRID decision in track 3 are complete.
-Choose and apply one SRID convention for newly constructed and derived
-geometries.
+Tracks 1 through 3 are complete. Begin track 4 by aligning public option names,
+types, documentation, and tests.

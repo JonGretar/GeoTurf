@@ -30,8 +30,12 @@ defmodule Geo.Test.MeasureTest do
   test "Center" do
     box = %Geo.Polygon{coordinates: [{0, 0}, {0, 10}, {10, 10}, {10, 0}]}
     floating_box = %Geo.Polygon{coordinates: [{0.0, 0.0}, {0.0, 10.0}, {10.0, 10.0}, {10.0, 0.0}]}
-    assert Geo.Turf.Measure.center(box) == %Geo.Point{coordinates: {5, 5}}
-    assert Geo.Turf.Measure.center(floating_box) == %Geo.Point{coordinates: {5.0, 5.0}}
+    assert Geo.Turf.Measure.center(box) == %Geo.Point{coordinates: {5, 5}, srid: 4326}
+
+    assert Geo.Turf.Measure.center(floating_box) == %Geo.Point{
+             coordinates: {5.0, 5.0},
+             srid: 4326
+           }
   end
 
   @fixture points: "distance/points.geojson"
@@ -71,12 +75,23 @@ defmodule Geo.Test.MeasureTest do
     start_point = %Geo.Point{coordinates: {-75.0, 39.0}}
 
     assert M.destination(start_point, 100, 180, units: :kilometers) == %Geo.Point{
-             coordinates: {-75.00000000000001, 38.10067963627546}
+             coordinates: {-75.00000000000001, 38.10067963627546},
+             srid: 4326
            }
 
     assert M.destination(start_point, 100, 180, units: :miles) == %Geo.Point{
-             coordinates: {-75.00000000000001, 37.552684168562095}
+             coordinates: {-75.00000000000001, 37.552684168562095},
+             srid: 4326
            }
+  end
+
+  test "derived points have an explicit WGS84 SRID" do
+    source = %Geo.LineString{coordinates: [{0, 0}, {0, 1}]}
+
+    assert %Geo.Point{srid: 4326} = M.destination(%Geo.Point{}, 1, 0)
+    assert %Geo.Point{srid: 4326} = M.along(source, 1)
+    assert %Geo.Point{srid: 4326} = M.centroid(source)
+    assert %Geo.Point{srid: 4326} = M.center(source)
   end
 
   # ---------------------------------------------------------------------------
@@ -134,7 +149,7 @@ defmodule Geo.Test.MeasureTest do
       coordinates: [[{0, 0}, {2, 0}], [{10, 10}, {12, 10}]]
     }
 
-    assert M.centroid(multiline) == %Geo.Point{coordinates: {6.0, 5.0}}
+    assert M.centroid(multiline) == %Geo.Point{coordinates: {6.0, 5.0}, srid: 4326}
   end
 
   test "centroid returns :error for an empty geometry" do
@@ -178,7 +193,7 @@ defmodule Geo.Test.MeasureTest do
       |> Math.rounded(2)
 
     assert M.length_of(open_ring) == expected_length
-    assert M.centroid(single_vertex) == %Geo.Point{coordinates: {1.0, 2.0}}
+    assert M.centroid(single_vertex) == %Geo.Point{coordinates: {1.0, 2.0}, srid: 4326}
   end
 
   test "center returns :error for a geometry without coordinates" do
