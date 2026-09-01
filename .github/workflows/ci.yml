@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: ["master"]
+    branches: ["main"]
   pull_request:
-    branches: ["master"]
+    branches: ["main"]
 
 env:
   MIX_ENV: test
@@ -23,6 +23,8 @@ jobs:
         include:
           - elixir: "1.15.6"
             otp: "26.2"
+          - elixir: "1.18.4"
+            otp: "28.0.2"
 
     steps:
       - uses: actions/checkout@v4
@@ -56,6 +58,31 @@ jobs:
       - name: Run tests
         run: mix test
 
+  quality:
+    name: Formatting, Credo, and docs
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: "1.18.4"
+          otp-version: "28.0.2"
+
+      - name: Install dependencies
+        run: MIX_ENV=dev mix deps.get
+
+      - name: Check formatting
+        run: mix format --check-formatted
+
+      - name: Run strict Credo
+        run: mix credo --strict
+
+      - name: Build documentation
+        run: MIX_ENV=dev mix docs
+
   dialyzer:
     name: Dialyzer
     runs-on: ubuntu-latest
@@ -66,30 +93,30 @@ jobs:
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:
-          elixir-version: "1.15.6"
-          otp-version: "26.2"
+          elixir-version: "1.18.4"
+          otp-version: "28.0.2"
 
       - name: Restore deps cache
         uses: actions/cache@v4
         with:
           path: deps
-          key: deps-${{ runner.os }}-26.2-1.15.6-${{ hashFiles('mix.lock') }}
-          restore-keys: deps-${{ runner.os }}-26.2-1.15.6-
+          key: deps-${{ runner.os }}-28.0.2-1.18.4-${{ hashFiles('mix.lock') }}
+          restore-keys: deps-${{ runner.os }}-28.0.2-1.18.4-
 
       - name: Restore build cache
         uses: actions/cache@v4
         with:
           path: _build
-          key: build-${{ runner.os }}-26.2-1.15.6-${{ hashFiles('mix.lock') }}
-          restore-keys: build-${{ runner.os }}-26.2-1.15.6-
+          key: build-${{ runner.os }}-28.0.2-1.18.4-${{ hashFiles('mix.lock') }}
+          restore-keys: build-${{ runner.os }}-28.0.2-1.18.4-
 
       - name: Restore PLT cache
         uses: actions/cache@v4
         id: plt_cache
         with:
           path: priv/plts
-          key: plt-${{ runner.os }}-26.2-1.15.6-${{ hashFiles('mix.lock') }}
-          restore-keys: plt-${{ runner.os }}-26.2-1.15.6-
+          key: plt-${{ runner.os }}-28.0.2-1.18.4-${{ hashFiles('mix.lock') }}
+          restore-keys: plt-${{ runner.os }}-28.0.2-1.18.4-
 
       - name: Install dependencies
         run: MIX_ENV=dev mix deps.get

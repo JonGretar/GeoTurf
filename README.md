@@ -5,6 +5,12 @@
 
 Spatial analysis for Elixir, ported from [TurfJS](http://turfjs.org/). Operates on [Geo](https://github.com/bryanjos/geo) structs using WGS84 coordinates.
 
+## Requirements
+
+GeoTurf supports Elixir 1.15 and later. CI verifies the minimum supported
+combination of Elixir 1.15 / OTP 26 and the current Elixir 1.18 / OTP 28
+combination.
+
 ## Usage
 
 All functions accept and return standard `Geo` structs.

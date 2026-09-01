@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Length and area APIs now reject unsupported units with explicit `ArgumentError` messages
 - Newly constructed WGS84 geometry and measurement-derived points now carry `srid: 4326`; coordinate-only transformations preserve the source SRID
 - Circle and destination options consistently use `:units`; unknown option names now raise instead of silently using defaults
+- The supported runtime floor is now Elixir 1.15 / OTP 26, with CI coverage through Elixir 1.18 / OTP 28
 
 ### Fixed
 

@@ -58,11 +58,11 @@ documented contracts for invalid input.
 - [x] Correct `:unit` / `:units` documentation, types, and tests.
 - [ ] Decide the canonical public length interface and compatibility path from
       `length_of/2`, as required by the `0.5` contract reset.
-- [ ] Declare an Elixir support floor compatible with all language features in
+- [x] Declare an Elixir support floor compatible with all language features in
       the implementation.
-- [ ] Make CI run formatting and strict Credo in addition to compile, test,
+- [x] Make CI run formatting and strict Credo in addition to compile, test,
       and Dialyzer.
-- [ ] Add a supported Elixir/OTP matrix after selecting the minimum version.
+- [x] Add a supported Elixir/OTP matrix after selecting the minimum version.
 - [ ] Update `CHANGELOG.md` under `Unreleased` for user-visible behavior.
 
 ## Acceptance Criteria
@@ -139,9 +139,14 @@ documented contracts for invalid input.
 - 2026-09-01: The option-contract slice passed formatting, tests (76 tests,
   29 doctests), Coveralls (94.5%), Dialyzer, strict Credo, and docs without
   warnings.
+- 2026-09-01: The supported floor is Elixir 1.15 / OTP 26. CI also verifies
+  Elixir 1.18 / OTP 28 and runs compilation, tests, formatting, strict Credo,
+  Dialyzer, and documentation generation against `main`.
+- 2026-09-01: The delivery slice passed `mix precommit` and warning-free
+  documentation generation locally. The version matrix itself requires CI.
 
 ## Handoff
 
-Tracks 1 through 3 and the option portion of track 4 are complete. Continue
-track 4 by declaring and testing the supported Elixir/OTP range and aligning
-local and CI quality checks.
+Only the canonical length-interface decision and final changelog/plan review
+remain. Decide whether `length_of/2` stays canonical or becomes a compatibility
+wrapper around a TurfJS-aligned `length/2`.
