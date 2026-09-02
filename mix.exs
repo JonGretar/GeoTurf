@@ -35,7 +35,7 @@ defmodule Geo.Turf.MixProject do
 
   defp description do
     """
-    A spatial analysis tool for Elixir's [Geo](https://github.com/bryanjos/geo) library ported from [TurfJS](http://turfjs.org/).
+    Brings WGS84 geospatial analysis to `Geo` structs: measure distances, bearings, lengths, and areas; find centroids and nearest points; test spatial relationships; and construct derived geometry.
     """
   end
 
