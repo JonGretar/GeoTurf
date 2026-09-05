@@ -11,7 +11,6 @@ each piece of work.
 - [Work System](WORKFLOW.md) - the operating rules for people and agents.
 - [Current Plans](plans/README.md) - actionable, bounded work.
 - [Domain Context](CONTEXT.md) - terms and invariants used when planning.
-- [Architecture Review](ARCHITECTURE_REVIEW.md) - the August 2026 assessment.
 - [ADRs](adr/README.md) - durable decisions only.
 
 ## Source Of Truth
