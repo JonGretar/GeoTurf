@@ -1,6 +1,7 @@
 # Line Analysis Foundations
 
 State: `Done`
+Archived after release: `2026-09-05`
 Priority: `P1`
 Owner: `Delta`
 Dependencies: [Quality Foundations](2026-08-quality-foundations.md)

@@ -5,17 +5,17 @@
 **Outcome:** GeoTurf's existing public functions have intentional edge-case,
 precision, topology, SRID, and option contracts.
 
-- [x] [Fix topology-preserving length](plans/2026-08-quality-foundations.md#1-topology-preserving-length)
-- [x] [Separate raw measurement from display rounding](plans/2026-08-quality-foundations.md#2-raw-geodesic-metrics)
-- [x] [Define invalid and empty geometry contracts](plans/2026-08-quality-foundations.md#3-geometry-and-unit-contracts)
-- [x] [Align options, types, docs, and supported runtimes](plans/2026-08-quality-foundations.md#4-delivery-contract)
+- [x] [Fix topology-preserving length](plans/completed/2026-08-quality-foundations.md#1-topology-preserving-length)
+- [x] [Separate raw measurement from display rounding](plans/completed/2026-08-quality-foundations.md#2-raw-geodesic-metrics)
+- [x] [Define invalid and empty geometry contracts](plans/completed/2026-08-quality-foundations.md#3-geometry-and-unit-contracts)
+- [x] [Align options, types, docs, and supported runtimes](plans/completed/2026-08-quality-foundations.md#4-delivery-contract)
 
 ## Now: Spatial Fundamentals
 
 **Outcome:** callers can solve common nearest, line, and boolean relationship
 queries without reaching for another library.
 
-- [x] [Line analysis foundations](plans/2026-09-line-analysis-foundations.md)
+- [x] [Line analysis foundations](plans/completed/2026-09-line-analysis-foundations.md)
   - nearest point on line
   - point-to-line distance
   - point-on-line predicate

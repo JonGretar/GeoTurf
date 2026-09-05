@@ -33,8 +33,10 @@ independent tracks and their owners.
    Do not silently widen scope.
 6. Complete every verification command named by the plan. Record the result
    and any check that could not run.
-7. Mark the plan `Done`, `Blocked`, or `Dropped`. Move completed plans to
-   `docs/plans/completed/` only during a periodic housekeeping pass.
+7. Mark the plan `Done`, `Blocked`, or `Dropped`.
+8. After the associated milestone release, move `Done` plans to
+   `docs/plans/completed/` and update links from the roadmap and plan index.
+   Retain archived plans as the record of scope, decisions, and verification.
 
 ## Plan Requirements
 
@@ -56,6 +58,10 @@ of the outcome. New public behavior also needs a changelog entry under
 An agent may start a `Ready` plan without further planning permission. It must
 not start a `Proposed` plan, change a `Blocked` plan's direction, create a
 release, or publish an external issue without explicit authority.
+
+Read active plans relevant to the current task. Consult completed plans only
+when they are linked as dependencies or when investigating an earlier contract
+or decision; do not load the archive as part of routine task discovery.
 
 Agents should prefer one complete vertical slice over broad preparatory
 refactors. A slice is complete when its implementation, tests, documentation,

@@ -1,6 +1,7 @@
 # Quality Foundations
 
 State: `Done`
+Archived after release: `2026-09-05`
 Priority: `P0`
 Owner: `Delta`
 Dependencies: `None`

@@ -1,21 +1,27 @@
 # Plans
 
-Plans are the actionable queue. A plan must be small enough for one focused
-change set and complete enough that an agent can verify it independently.
+Plans in this directory are the actionable queue. A plan must be small enough
+for one focused change set and complete enough that an agent can verify it
+independently. Read only plans relevant to the current task; consult
+`completed/` when a dependency or earlier decision requires it.
+
+## Active
+
+No active plans.
 
 ## Completed
 
-- [Quality Foundations](2026-08-quality-foundations.md) - `Done`
-
-## Proposed
-
-- [Line Analysis Foundations](2026-09-line-analysis-foundations.md) - `Proposed`, blocked by Quality Foundations
+- [Quality Foundations](completed/2026-08-quality-foundations.md) - `Done`,
+  released in `0.5.0`
+- [Line Analysis Foundations](completed/2026-09-line-analysis-foundations.md) -
+  `Done`, released in `0.6.0`
 
 ## Naming
 
-Use `YYYY-MM-short-outcome.md`. Keep completed plans in this directory until a
-housekeeping pass moves them to `completed/`, preserving links from the
-roadmap.
+Use `YYYY-MM-short-outcome.md`. After the associated milestone release, move
+`Done` plans to `completed/`, preserving links from the roadmap and this index.
+Archived plans remain the repository-visible record of scope, decisions, and
+verification, but are not part of routine task discovery.
 
 ## Template
 
