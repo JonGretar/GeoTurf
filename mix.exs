@@ -14,13 +14,6 @@ defmodule Geo.Turf.MixProject do
       dialyzer: [plt_file: {:no_warn, "priv/plts/#{Mix.env()}.plt"}],
       deps: deps(),
       docs: docs(),
-      preferred_cli_env: [
-        coveralls: :test,
-        "coveralls.detail": :test,
-        "coveralls.post": :test,
-        "coveralls.html": :test,
-        precommit: :test
-      ],
       aliases: [
         precommit: [
           "compile --warnings-as-errors",
@@ -43,6 +36,18 @@ defmodule Geo.Turf.MixProject do
   def application do
     [
       extra_applications: [:logger]
+    ]
+  end
+
+  def cli do
+    [
+      preferred_envs: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test,
+        precommit: :test
+      ]
     ]
   end
 
