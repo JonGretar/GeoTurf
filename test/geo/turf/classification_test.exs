@@ -383,6 +383,14 @@ defmodule Geo.Turf.ClassificationTest do
            )
   end
 
+  @fixture zero_length_case: "point_on_line/issue-2750.geojson"
+  test "point_on_line? matches TurfJS issue 2750 for zero-length lines", ctx do
+    [line, different_longitude, same_longitude] = ctx.zero_length_case
+
+    refute C.point_on_line?(different_longitude, line)
+    refute C.point_on_line?(same_longitude, line)
+  end
+
   @fixture points: "nearest_point/points.geojson"
   test "nearest_point respects units option — miles vs kilometers same winner", ctx do
     target = %Geo.Point{coordinates: {-75.4, 39.4}}

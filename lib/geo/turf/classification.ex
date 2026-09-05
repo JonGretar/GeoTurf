@@ -2,7 +2,7 @@ defmodule Geo.Turf.Classification do
   @moduledoc """
   A collection of classification and boolean spatial functions.
   """
-  alias Geo.Turf.Measure
+  alias Geo.Turf.{Math, Measure}
   import Geo.Turf.Helpers, only: [assert_wgs84!: 1]
 
   @doc """
@@ -287,12 +287,13 @@ defmodule Geo.Turf.Classification do
          _point,
          _start,
          _finish,
-         0,
+         segment_length,
          _location,
          _segment_index,
          _line_index,
          _units
-       ),
+       )
+       when segment_length == 0,
        do: []
 
   defp interior_snap_candidate(
@@ -312,7 +313,7 @@ defmodule Geo.Turf.Classification do
     point_distance =
       point
       |> Measure.distance(start_point, units)
-      |> Geo.Turf.Math.length_to_radians(units)
+      |> Math.length_to_radians(units)
 
     along_segment =
       :math.atan2(
@@ -320,7 +321,7 @@ defmodule Geo.Turf.Classification do
           :math.cos(degrees_to_radians(point_bearing - segment_bearing)),
         :math.cos(point_distance)
       )
-      |> Geo.Turf.Math.radians_to_length(units)
+      |> Math.radians_to_length(units)
 
     if along_segment > 0 and along_segment < segment_length do
       snapped_point =
@@ -333,7 +334,7 @@ defmodule Geo.Turf.Classification do
         |> clamp(-1, 1)
         |> :math.asin()
         |> abs()
-        |> Geo.Turf.Math.radians_to_length(units)
+        |> Math.radians_to_length(units)
 
       [
         %{

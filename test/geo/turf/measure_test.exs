@@ -14,7 +14,20 @@ defmodule Geo.Test.MeasureTest do
     point = %Geo.Point{coordinates: {1, 1}}
     line = %Geo.LineString{coordinates: [{0, 0}, {2, 0}]}
 
-    assert_in_delta M.point_to_line_distance(point, line), 111.1950802335329, 1.0e-9
+    distance = M.point_to_line_distance(point, line)
+
+    assert {:ok, snapped_point, _metadata} =
+             Geo.Turf.Classification.nearest_point_on_line(point, line)
+
+    assert_in_delta distance, 111.1950802335329, 1.0e-9
+    assert_in_delta distance, M.distance(point, snapped_point), 1.0e-9
+  end
+
+  @fixture distance_case: "point_to_line_distance/issue-2270.geojson"
+  test "point_to_line_distance matches the TurfJS issue 2270 regression", ctx do
+    [point, line] = ctx.distance_case
+
+    assert_in_delta M.point_to_line_distance(point, line, units: :meters), 3.4, 0.05
   end
 
   # ---------------------------------------------------------------------------
@@ -50,6 +63,29 @@ defmodule Geo.Test.MeasureTest do
     assert [{start_lon, _}, {1, 0}, {2, 0}, {stop_lon, _}] = coordinates
     assert_in_delta start_lon, 0.5, 1.0e-10
     assert_in_delta stop_lon, 2.5, 1.0e-10
+  end
+
+  @fixture slice_case: "line_slice/issue-2023.geojson"
+  test "line_slice matches the TurfJS issue 2023 geodesic slice", ctx do
+    [line, start_point, stop_point] = ctx.slice_case
+
+    assert {:ok, %Geo.LineString{coordinates: [start_coordinate, {longitude, latitude}]}} =
+             M.line_slice(start_point, stop_point, line)
+
+    assert start_coordinate == start_point.coordinates
+    assert_in_delta longitude, -0.03079923, 1.0e-8
+    assert_in_delta latitude, 48.08596086, 1.0e-8
+  end
+
+  @fixture no_duplicate_slice_case: "line_slice/issue-2946.geojson"
+  test "line_slice matches TurfJS issue 2946 without duplicate coordinates", ctx do
+    [line, start_point, stop_point] = ctx.no_duplicate_slice_case
+
+    assert {:ok, %Geo.LineString{coordinates: coordinates}} =
+             M.line_slice(start_point, stop_point, line)
+
+    assert length(coordinates) == 2
+    assert Enum.uniq(coordinates) == coordinates
   end
 
   @fixture dcline: "along/dc-line.geojson"
