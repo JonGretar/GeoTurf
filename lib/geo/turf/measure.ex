@@ -329,6 +329,54 @@ defmodule Geo.Turf.Measure do
   end
 
   @doc """
+  Extracts the section of a LineString between two points.
+
+  Both input points are snapped to the line. The result follows the source
+  LineString's coordinate order regardless of the order of the input points
+  and includes all intervening vertices. Returns `:error` for an empty line.
+
+  ## Examples
+
+      iex> line = %Geo.LineString{coordinates: [{0, 0}, {1, 0}, {2, 0}]}
+      ...> {:ok, slice} = Geo.Turf.Measure.line_slice(
+      ...>   %Geo.Point{coordinates: {0.5, 1}},
+      ...>   %Geo.Point{coordinates: {1.5, -1}},
+      ...>   line
+      ...> )
+      ...> Geo.Turf.Math.approx(%Geo.Point{coordinates: hd(slice.coordinates)}, 4)
+      %Geo.Point{coordinates: {0.5, 0.0}}
+
+  """
+  @spec line_slice(Geo.Point.t(), Geo.Point.t(), Geo.LineString.t()) ::
+          {:ok, Geo.LineString.t()} | :error
+  def line_slice(start_point, stop_point, %Geo.LineString{coordinates: coordinates} = line) do
+    with {:ok, snapped_start, start_metadata} <-
+           Classification.nearest_point_on_line(start_point, line),
+         {:ok, snapped_stop, stop_metadata} <-
+           Classification.nearest_point_on_line(stop_point, line) do
+      [{first_point, first_metadata}, {last_point, last_metadata}] =
+        Enum.sort_by(
+          [{snapped_start, start_metadata}, {snapped_stop, stop_metadata}],
+          fn {_point, metadata} -> metadata.location end
+        )
+
+      intermediate =
+        coordinates
+        |> Enum.slice(
+          first_metadata.segment_index + 1,
+          last_metadata.segment_index - first_metadata.segment_index
+        )
+
+      sliced_coordinates =
+        [first_point.coordinates | intermediate]
+        |> Kernel.++([last_point.coordinates])
+        |> Enum.dedup()
+
+      {:ok, %Geo.LineString{coordinates: sliced_coordinates, srid: 4326}}
+    end
+  end
+
+  @doc """
   Calculates the distance between two points in degrees, radians, miles, or kilometers.
   This uses the [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula) to account for global curvature.
   Returns the raw floating-point result; use `Geo.Turf.Math.rounded/2` when

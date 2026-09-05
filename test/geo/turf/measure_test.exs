@@ -17,6 +17,41 @@ defmodule Geo.Test.MeasureTest do
     assert_in_delta M.point_to_line_distance(point, line), 111.1950802335329, 1.0e-9
   end
 
+  # ---------------------------------------------------------------------------
+  # line_slice — snapped endpoints in source route direction
+  # Mirrors: TurfJS "@turf/line-slice"
+  # ---------------------------------------------------------------------------
+
+  test "line_slice snaps off-line inputs and includes intervening vertices" do
+    line = %Geo.LineString{coordinates: [{0, 0}, {1, 0}, {2, 0}, {3, 0}]}
+    start_point = %Geo.Point{coordinates: {0.5, 1}}
+    stop_point = %Geo.Point{coordinates: {2.5, -1}}
+
+    assert {:ok, %Geo.LineString{coordinates: coordinates, srid: 4326}} =
+             M.line_slice(start_point, stop_point, line)
+
+    assert [{start_lon, start_lat}, {1, 0}, {2, 0}, {stop_lon, stop_lat}] = coordinates
+    assert_in_delta start_lon, 0.5, 1.0e-10
+    assert_in_delta start_lat, 0.0, 1.0e-10
+    assert_in_delta stop_lon, 2.5, 1.0e-10
+    assert_in_delta stop_lat, 0.0, 1.0e-10
+  end
+
+  test "line_slice preserves source route direction for out-of-order inputs" do
+    line = %Geo.LineString{coordinates: [{0, 0}, {1, 0}, {2, 0}, {3, 0}]}
+
+    assert {:ok, %Geo.LineString{coordinates: coordinates}} =
+             M.line_slice(
+               %Geo.Point{coordinates: {2.5, 0}},
+               %Geo.Point{coordinates: {0.5, 0}},
+               line
+             )
+
+    assert [{start_lon, _}, {1, 0}, {2, 0}, {stop_lon, _}] = coordinates
+    assert_in_delta start_lon, 0.5, 1.0e-10
+    assert_in_delta stop_lon, 2.5, 1.0e-10
+  end
+
   @fixture dcline: "along/dc-line.geojson"
   @fixture dcpoints: "along/dc-points.geojson"
   test "Along", ctx do

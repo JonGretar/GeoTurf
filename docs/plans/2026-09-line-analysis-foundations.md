@@ -45,9 +45,9 @@ contract acceptance criteria pass. This is the first P1 milestone.
 ### 3. Predicate And Slicing
 
 - [x] Implement `point_on_line?/3` using the same tolerance policy.
-- [ ] Implement `line_slice/3` after deciding whether it accepts only points
+- [x] Implement `line_slice/3` after deciding whether it accepts only points
       on the line or snaps its inputs first.
-- [ ] Add docs and examples that make the chosen behavior visible.
+- [x] Add docs and examples that make the chosen behavior visible.
 
 ## Acceptance Criteria
 
@@ -57,7 +57,7 @@ contract acceptance criteria pass. This is the first P1 milestone.
       location metadata.
 - [ ] Point-to-line distance equals the snap point's raw point distance.
 - [x] The point-on-line predicate has documented endpoint and tolerance rules.
-- [ ] Line slicing preserves route direction and has defined behavior for
+- [x] Line slicing preserves route direction and has defined behavior for
       out-of-order or off-line input points.
 - [ ] All new public functions have TurfJS comparison fixtures where an
       equivalent TurfJS function exists.
@@ -91,6 +91,7 @@ contract acceptance criteria pass. This is the first P1 milestone.
 
 ## Handoff
 
-Implemented snapping, point-to-line distance, and the point-on-line predicate.
-The next action is a TDD slice for `line_slice/3`, which snaps both inputs and
-preserves route direction.
+Implemented snapping, point-to-line distance, the point-on-line predicate, and
+LineString slicing. The next action is to add the remaining TurfJS-derived
+endpoint, duplicate-vertex, and degenerate fixtures, then complete the full
+verification suite.

@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and MultiLineString segments with raw distance and route-location metadata
 - `Classification.point_on_line?/3` tests line membership with an inclusive,
   unit-aware geodesic tolerance
+- `Measure.line_slice/3` snaps two points and extracts their LineString section
+  in source route order
 - `Measure.point_to_line_distance/3` measures the raw distance using the same
   snapping semantics
 
