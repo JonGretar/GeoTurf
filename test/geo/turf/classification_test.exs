@@ -297,6 +297,34 @@ defmodule Geo.Turf.ClassificationTest do
              )
   end
 
+  # ---------------------------------------------------------------------------
+  # point_on_line? — endpoint and tolerance semantics
+  # Mirrors: TurfJS "@turf/boolean-point-on-line"
+  # ---------------------------------------------------------------------------
+
+  test "point_on_line? includes endpoints and segment interiors" do
+    line = %Geo.LineString{coordinates: [{0, 0}, {2, 0}]}
+
+    assert C.point_on_line?(%Geo.Point{coordinates: {0, 0}}, line)
+    assert C.point_on_line?(%Geo.Point{coordinates: {1, 0}}, line)
+    refute C.point_on_line?(%Geo.Point{coordinates: {1, 1}}, line)
+  end
+
+  test "point_on_line? applies an inclusive tolerance in the requested units" do
+    line = %Geo.LineString{coordinates: [{0, 0}, {2, 0}]}
+    point = %Geo.Point{coordinates: {1, 0.000008_993_203_637_245_38}}
+
+    assert C.point_on_line?(point, line, tolerance: 1, units: :meters)
+    refute C.point_on_line?(point, line, tolerance: 0.99, units: :meters)
+  end
+
+  test "point_on_line? returns false for an empty line" do
+    refute C.point_on_line?(
+             %Geo.Point{coordinates: {0, 0}},
+             %Geo.LineString{coordinates: []}
+           )
+  end
+
   @fixture points: "nearest_point/points.geojson"
   test "nearest_point respects units option — miles vs kilometers same winner", ctx do
     target = %Geo.Point{coordinates: {-75.4, 39.4}}

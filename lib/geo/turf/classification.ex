@@ -180,6 +180,42 @@ defmodule Geo.Turf.Classification do
     nearest_point_on_paths(point, Enum.with_index(paths), line, opts)
   end
 
+  @doc """
+  Tests whether a Point lies on a LineString or MultiLineString.
+
+  Endpoints are included. `:tolerance` is an inclusive maximum geodesic
+  distance from the line in the requested `:units`; it defaults to zero.
+  `:units` defaults to `:kilometers`. Empty lines return `false`.
+
+  ## Examples
+
+      iex> line = %Geo.LineString{coordinates: [{0, 0}, {2, 0}]}
+      ...> Geo.Turf.Classification.point_on_line?(
+      ...>   %Geo.Point{coordinates: {1, 0}},
+      ...>   line
+      ...> )
+      true
+
+  """
+  @spec point_on_line?(
+          Geo.Point.t(),
+          Geo.LineString.t() | Geo.MultiLineString.t(),
+          keyword()
+        ) :: boolean()
+  def point_on_line?(point, line, opts \\ []) do
+    opts = Keyword.validate!(opts, units: :kilometers, tolerance: 0)
+    tolerance = opts[:tolerance]
+
+    unless is_number(tolerance) and tolerance >= 0 do
+      raise ArgumentError, "tolerance must be a non-negative number"
+    end
+
+    case nearest_point_on_line(point, line, units: opts[:units]) do
+      {:ok, _snapped_point, %{distance: distance}} -> distance <= tolerance
+      :error -> false
+    end
+  end
+
   defp nearest_point_on_paths(point, paths, line, opts) do
     assert_wgs84!(point)
     assert_wgs84!(line)
@@ -290,11 +326,20 @@ defmodule Geo.Turf.Classification do
       snapped_point =
         Measure.destination(start_point, along_segment, segment_bearing, units: units)
 
+      cross_track_distance =
+        point_distance
+        |> :math.sin()
+        |> Kernel.*(:math.sin(degrees_to_radians(point_bearing - segment_bearing)))
+        |> clamp(-1, 1)
+        |> :math.asin()
+        |> abs()
+        |> Geo.Turf.Math.radians_to_length(units)
+
       [
         %{
           point: snapped_point,
           metadata: %{
-            distance: Measure.distance(point, snapped_point, units),
+            distance: cross_track_distance,
             location: location + along_segment,
             segment_index: segment_index,
             line_index: line_index
@@ -316,6 +361,8 @@ defmodule Geo.Turf.Classification do
   end
 
   defp point_at(coordinates), do: %Geo.Point{coordinates: coordinates, srid: 4326}
+
+  defp clamp(value, minimum, maximum), do: value |> max(minimum) |> min(maximum)
 
   defp degrees_to_radians(degrees), do: degrees * :math.pi() / 180
 

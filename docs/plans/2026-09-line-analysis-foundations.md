@@ -30,7 +30,7 @@ contract acceptance criteria pass. This is the first P1 milestone.
 
 - [x] Define a WGS84 line traversal that preserves each MultiLineString member
       as a separate coordinate path.
-- [ ] Define an explicit tolerance option for coordinate-on-segment checks.
+- [x] Define an explicit tolerance option for coordinate-on-segment checks.
 - [ ] Add TurfJS-derived fixtures for endpoint, interior, duplicate-vertex,
       degenerate, and MultiLineString cases.
 
@@ -40,11 +40,11 @@ contract acceptance criteria pass. This is the first P1 milestone.
 - [x] Return the snapped point plus documented route-location metadata that
       suits `Geo` structs and Elixir conventions.
 - [x] Implement `point_to_line_distance/3` using the same segment semantics.
-- [ ] Verify that ranking and thresholds use raw distance values.
+- [x] Verify that ranking and thresholds use raw distance values.
 
 ### 3. Predicate And Slicing
 
-- [ ] Implement `point_on_line?/3` using the same tolerance policy.
+- [x] Implement `point_on_line?/3` using the same tolerance policy.
 - [ ] Implement `line_slice/3` after deciding whether it accepts only points
       on the line or snaps its inputs first.
 - [ ] Add docs and examples that make the chosen behavior visible.
@@ -56,7 +56,7 @@ contract acceptance criteria pass. This is the first P1 milestone.
 - [ ] Snapping a point to a segment returns the nearest WGS84 point and stable
       location metadata.
 - [ ] Point-to-line distance equals the snap point's raw point distance.
-- [ ] The point-on-line predicate has documented endpoint and tolerance rules.
+- [x] The point-on-line predicate has documented endpoint and tolerance rules.
 - [ ] Line slicing preserves route direction and has defined behavior for
       out-of-order or off-line input points.
 - [ ] All new public functions have TurfJS comparison fixtures where an
@@ -91,6 +91,6 @@ contract acceptance criteria pass. This is the first P1 milestone.
 
 ## Handoff
 
-Implemented snapping and point-to-line distance with focused LineString,
-MultiLineString, and empty-line tests. The next action is a TDD slice for
-`point_on_line?/3`, including its `:tolerance` contract.
+Implemented snapping, point-to-line distance, and the point-on-line predicate.
+The next action is a TDD slice for `line_slice/3`, which snaps both inputs and
+preserves route direction.
