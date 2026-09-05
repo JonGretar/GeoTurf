@@ -1,6 +1,6 @@
 # Roadmap
 
-## Now: Quality Foundations
+## Completed: Quality Foundations
 
 **Outcome:** GeoTurf's existing public functions have intentional edge-case,
 precision, topology, SRID, and option contracts.
@@ -10,12 +10,12 @@ precision, topology, SRID, and option contracts.
 - [x] [Define invalid and empty geometry contracts](plans/2026-08-quality-foundations.md#3-geometry-and-unit-contracts)
 - [x] [Align options, types, docs, and supported runtimes](plans/2026-08-quality-foundations.md#4-delivery-contract)
 
-## Next: Spatial Fundamentals
+## Now: Spatial Fundamentals
 
 **Outcome:** callers can solve common nearest, line, and boolean relationship
 queries without reaching for another library.
 
-- [ ] [Line analysis foundations](plans/2026-09-line-analysis-foundations.md)
+- [x] [Line analysis foundations](plans/2026-09-line-analysis-foundations.md)
   - nearest point on line
   - point-to-line distance
   - point-on-line predicate

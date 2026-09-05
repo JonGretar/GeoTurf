@@ -1,6 +1,6 @@
 # Line Analysis Foundations
 
-State: `In progress`
+State: `Done`
 Priority: `P1`
 Owner: `Delta`
 Dependencies: [Quality Foundations](2026-08-quality-foundations.md)
@@ -55,21 +55,21 @@ contract acceptance criteria pass. This is the first P1 milestone.
       along-line metadata.
 - [x] Snapping a point to a segment returns the nearest WGS84 point and stable
       location metadata.
-- [ ] Point-to-line distance equals the snap point's raw point distance.
+- [x] Point-to-line distance equals the snap point's raw point distance.
 - [x] The point-on-line predicate has documented endpoint and tolerance rules.
 - [x] Line slicing preserves route direction and has defined behavior for
       out-of-order or off-line input points.
-- [ ] All new public functions have TurfJS comparison fixtures where an
+- [x] All new public functions have TurfJS comparison fixtures where an
       equivalent TurfJS function exists.
 
 ## Verification
 
-- `mix format --check-formatted`
-- `mix test`
-- `mix coveralls`
-- `mix dialyzer`
-- `mix credo --strict`
-- `mix docs`
+- [x] `mix format --check-formatted`
+- [x] `mix test` — 31 doctests and 94 tests pass
+- [x] `mix coveralls` — 94.5% total coverage
+- [x] `mix dialyzer` — no errors
+- [x] `mix credo --strict` — no issues
+- [x] `mix docs` — generated successfully
 
 ## Decision Log
 
@@ -91,9 +91,11 @@ contract acceptance criteria pass. This is the first P1 milestone.
 - 2026-09-05: Nearest-point conformance covers TurfJS's `line1` interior
   fixture and focused upstream regressions for long-arc endpoint selection,
   duplicate vertices, redundant segments, and MultiLineString member indexes.
+- 2026-09-05: Distance, predicate, and slicing conformance uses TurfJS
+  regressions #2270, #2750, #2023, and #2946 respectively.
 
 ## Handoff
 
-Implemented all four interfaces and added the planned nearest-point conformance
-fixtures. The next action is focused TurfJS comparison fixtures for
-`point_to_line_distance/3`, `point_on_line?/3`, and `line_slice/3`.
+Complete. All four interfaces, shared segment semantics, documentation,
+changelog entries, and TurfJS comparison fixtures are in place. The full
+verification suite passes.
