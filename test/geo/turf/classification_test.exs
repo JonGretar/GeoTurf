@@ -269,6 +269,20 @@ defmodule Geo.Turf.ClassificationTest do
     assert_in_delta metadata.location, 111.1950802335329, 1.0e-9
   end
 
+  @fixture interior_case: "nearest_point_on_line/interior.geojson"
+  test "nearest_point_on_line matches the TurfJS interior fixture", ctx do
+    [line, point] = ctx.interior_case
+
+    assert {:ok, %Geo.Point{coordinates: {longitude, latitude}}, metadata} =
+             C.nearest_point_on_line(point, line)
+
+    assert_in_delta longitude, -97.856502, 1.0e-6
+    assert_in_delta latitude, 22.270017, 1.0e-6
+    assert metadata.segment_index == 1
+    assert_in_delta metadata.distance, 2.556271, 1.0e-6
+    assert_in_delta metadata.location, 22.137494, 1.0e-6
+  end
+
   test "nearest_point_on_line does not join MultiLineString members" do
     point = %Geo.Point{coordinates: {5, 0}}
 
@@ -289,12 +303,56 @@ defmodule Geo.Turf.ClassificationTest do
     assert_in_delta metadata.location, 111.1950802335329, 1.0e-10
   end
 
+  @fixture multiline_case: "nearest_point_on_line/multiline.geojson"
+  test "nearest_point_on_line reports the TurfJS MultiLineString member", ctx do
+    [line, point] = ctx.multiline_case
+
+    assert {:ok, %Geo.Point{coordinates: {4, 30}}, metadata} =
+             C.nearest_point_on_line(point, line)
+
+    assert metadata.line_index == 1
+    assert metadata.segment_index == 0
+    assert metadata.distance == 0
+  end
+
   test "nearest_point_on_line returns an error for lines without coordinates" do
     assert :error =
              C.nearest_point_on_line(
                %Geo.Point{coordinates: {0, 0}},
                %Geo.LineString{coordinates: []}
              )
+  end
+
+  # TurfJS-derived regression fixtures from @turf/nearest-point-on-line.
+  @fixture endpoint_case: "nearest_point_on_line/endpoint.geojson"
+  test "nearest_point_on_line selects the nearest endpoint for a long arc", ctx do
+    [line, point] = ctx.endpoint_case
+
+    assert {:ok, %Geo.Point{coordinates: {25, -70}}, metadata} =
+             C.nearest_point_on_line(point, line)
+
+    assert metadata.segment_index == 0
+    assert metadata.location > 0
+  end
+
+  @fixture duplicate_case: "nearest_point_on_line/duplicate-vertices.geojson"
+  test "nearest_point_on_line handles a duplicate leading vertex", ctx do
+    [line, point] = ctx.duplicate_case
+
+    assert {:ok, %Geo.Point{coordinates: {-80.191793, 25.885611}}, metadata} =
+             C.nearest_point_on_line(point, line, units: :meters)
+
+    assert metadata.distance > 4
+    assert metadata.location == 0
+  end
+
+  @fixture degenerate_case: "nearest_point_on_line/degenerate.geojson"
+  test "nearest_point_on_line handles a fully degenerate line", ctx do
+    [line, point] = ctx.degenerate_case
+
+    assert {:ok, ^point, metadata} = C.nearest_point_on_line(point, line)
+    assert metadata.distance == 0
+    assert metadata.location == 0
   end
 
   # ---------------------------------------------------------------------------

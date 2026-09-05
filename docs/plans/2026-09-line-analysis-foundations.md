@@ -31,7 +31,7 @@ contract acceptance criteria pass. This is the first P1 milestone.
 - [x] Define a WGS84 line traversal that preserves each MultiLineString member
       as a separate coordinate path.
 - [x] Define an explicit tolerance option for coordinate-on-segment checks.
-- [ ] Add TurfJS-derived fixtures for endpoint, interior, duplicate-vertex,
+- [x] Add TurfJS-derived fixtures for endpoint, interior, duplicate-vertex,
       degenerate, and MultiLineString cases.
 
 ### 2. Snap And Distance
@@ -51,9 +51,9 @@ contract acceptance criteria pass. This is the first P1 milestone.
 
 ## Acceptance Criteria
 
-- [ ] Separate line members are never joined for traversal, distances, or
+- [x] Separate line members are never joined for traversal, distances, or
       along-line metadata.
-- [ ] Snapping a point to a segment returns the nearest WGS84 point and stable
+- [x] Snapping a point to a segment returns the nearest WGS84 point and stable
       location metadata.
 - [ ] Point-to-line distance equals the snap point's raw point distance.
 - [x] The point-on-line predicate has documented endpoint and tolerance rules.
@@ -88,10 +88,12 @@ contract acceptance criteria pass. This is the first P1 milestone.
   LineString and identifies the member for a MultiLineString.
 - 2026-09-05: `point_on_line?/3` accepts `:tolerance` in the requested
   `:units`; `line_slice/3` snaps off-line inputs before slicing.
+- 2026-09-05: Nearest-point conformance covers TurfJS's `line1` interior
+  fixture and focused upstream regressions for long-arc endpoint selection,
+  duplicate vertices, redundant segments, and MultiLineString member indexes.
 
 ## Handoff
 
-Implemented snapping, point-to-line distance, the point-on-line predicate, and
-LineString slicing. The next action is to add the remaining TurfJS-derived
-endpoint, duplicate-vertex, and degenerate fixtures, then complete the full
-verification suite.
+Implemented all four interfaces and added the planned nearest-point conformance
+fixtures. The next action is focused TurfJS comparison fixtures for
+`point_to_line_distance/3`, `point_on_line?/3`, and `line_slice/3`.
