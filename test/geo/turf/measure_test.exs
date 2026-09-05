@@ -5,6 +5,18 @@ defmodule Geo.Test.MeasureTest do
   alias Geo.Turf.Measure, as: M
   doctest Geo.Turf.Measure
 
+  # ---------------------------------------------------------------------------
+  # point_to_line_distance — shared nearest-point segment semantics
+  # Mirrors: TurfJS "@turf/point-to-line-distance" simple LineString case
+  # ---------------------------------------------------------------------------
+
+  test "point_to_line_distance returns the raw distance to the snapped point" do
+    point = %Geo.Point{coordinates: {1, 1}}
+    line = %Geo.LineString{coordinates: [{0, 0}, {2, 0}]}
+
+    assert_in_delta M.point_to_line_distance(point, line), 111.1950802335329, 1.0e-9
+  end
+
   @fixture dcline: "along/dc-line.geojson"
   @fixture dcpoints: "along/dc-points.geojson"
   test "Along", ctx do

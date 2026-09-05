@@ -249,6 +249,54 @@ defmodule Geo.Turf.ClassificationTest do
     assert C.nearest_point(target, [farther, nearer], units: :meters) == nearer
   end
 
+  # ---------------------------------------------------------------------------
+  # nearest_point_on_line — interior segment snap
+  # Mirrors: TurfJS "@turf/nearest-point-on-line" simple LineString case
+  # ---------------------------------------------------------------------------
+
+  test "nearest_point_on_line snaps to an interior segment and returns route metadata" do
+    point = %Geo.Point{coordinates: {1, 1}}
+    line = %Geo.LineString{coordinates: [{0, 0}, {2, 0}]}
+
+    assert {:ok, %Geo.Point{coordinates: {longitude, latitude}, srid: 4326}, metadata} =
+             C.nearest_point_on_line(point, line)
+
+    assert_in_delta longitude, 1.0, 1.0e-10
+    assert_in_delta latitude, 0.0, 1.0e-10
+    assert metadata.segment_index == 0
+    assert metadata.line_index == 0
+    assert_in_delta metadata.distance, 111.1950802335329, 1.0e-9
+    assert_in_delta metadata.location, 111.1950802335329, 1.0e-9
+  end
+
+  test "nearest_point_on_line does not join MultiLineString members" do
+    point = %Geo.Point{coordinates: {5, 0}}
+
+    line =
+      %Geo.MultiLineString{
+        coordinates: [
+          [{0, 0}, {1, 0}],
+          [{10, 0}, {11, 0}]
+        ]
+      }
+
+    assert {:ok, %Geo.Point{coordinates: {1, 0}, srid: 4326}, metadata} =
+             C.nearest_point_on_line(point, line)
+
+    assert metadata.line_index == 0
+    assert metadata.segment_index == 0
+    assert_in_delta metadata.distance, 444.7803209341316, 1.0e-10
+    assert_in_delta metadata.location, 111.1950802335329, 1.0e-10
+  end
+
+  test "nearest_point_on_line returns an error for lines without coordinates" do
+    assert :error =
+             C.nearest_point_on_line(
+               %Geo.Point{coordinates: {0, 0}},
+               %Geo.LineString{coordinates: []}
+             )
+  end
+
   @fixture points: "nearest_point/points.geojson"
   test "nearest_point respects units option — miles vs kilometers same winner", ctx do
     target = %Geo.Point{coordinates: {-75.4, 39.4}}

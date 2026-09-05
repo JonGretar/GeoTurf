@@ -5,6 +5,7 @@ defmodule Geo.Turf.Measure do
   Newly calculated points use the explicit WGS84 SRID `4326`.
   """
   import Geo.Turf.Helpers, only: [bbox: 1, assert_wgs84!: 1]
+  alias Geo.Turf.Classification
   alias Geo.Turf.Math
 
   @type units :: {:units, Math.length_unit()}
@@ -305,6 +306,26 @@ defmodule Geo.Turf.Measure do
   """
   def close_to(point_a, point_b, maximum \\ 100, units \\ :meters) do
     distance(point_a, point_b, units) <= maximum
+  end
+
+  @doc """
+  Measures the raw geodesic distance from a Point to its nearest point on a
+  LineString or MultiLineString.
+
+  Uses the same segment traversal and `:units` option as
+  `Geo.Turf.Classification.nearest_point_on_line/3`; units default to
+  `:kilometers`. Returns `:error` when the line contains no coordinates.
+  """
+  @spec point_to_line_distance(
+          Geo.Point.t(),
+          Geo.LineString.t() | Geo.MultiLineString.t(),
+          keyword()
+        ) :: float() | :error
+  def point_to_line_distance(point, line, opts \\ []) do
+    case Classification.nearest_point_on_line(point, line, opts) do
+      {:ok, _snapped_point, %{distance: distance}} -> distance
+      :error -> :error
+    end
   end
 
   @doc """

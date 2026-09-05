@@ -1,8 +1,8 @@
 # Line Analysis Foundations
 
-State: `Proposed`
+State: `In progress`
 Priority: `P1`
-Owner: `Unassigned`
+Owner: `Delta`
 Dependencies: [Quality Foundations](2026-08-quality-foundations.md)
 
 ## Outcome
@@ -28,7 +28,7 @@ contract acceptance criteria pass. This is the first P1 milestone.
 
 ### 1. Shared Segment Semantics
 
-- [ ] Define a WGS84 line traversal that preserves each MultiLineString member
+- [x] Define a WGS84 line traversal that preserves each MultiLineString member
       as a separate coordinate path.
 - [ ] Define an explicit tolerance option for coordinate-on-segment checks.
 - [ ] Add TurfJS-derived fixtures for endpoint, interior, duplicate-vertex,
@@ -36,10 +36,10 @@ contract acceptance criteria pass. This is the first P1 milestone.
 
 ### 2. Snap And Distance
 
-- [ ] Implement `nearest_point_on_line/3` for LineString and MultiLineString.
-- [ ] Return the snapped point plus documented route-location metadata that
+- [x] Implement `nearest_point_on_line/3` for LineString and MultiLineString.
+- [x] Return the snapped point plus documented route-location metadata that
       suits `Geo` structs and Elixir conventions.
-- [ ] Implement `point_to_line_distance/3` using the same segment semantics.
+- [x] Implement `point_to_line_distance/3` using the same segment semantics.
 - [ ] Verify that ranking and thresholds use raw distance values.
 
 ### 3. Predicate And Slicing
@@ -77,9 +77,20 @@ contract acceptance criteria pass. This is the first P1 milestone.
   public functions share coordinate-path traversal and segment semantics.
 - 2026-08-31: It is blocked by Quality Foundations; do not duplicate or bypass
   its precision, unit, SRID, or topology decisions.
+- 2026-09-05: Public seams confirmed: snapping returns
+  `{:ok, %Geo.Point{}, metadata}` or `:error`; point-to-line distance and
+  slicing live in `Geo.Turf.Measure`; and the point-on-line predicate lives in
+  `Geo.Turf.Classification`.
+- 2026-09-05: Snapping metadata is
+  `%{distance: distance, location: location, segment_index: segment_index,
+  line_index: line_index}`. Distances and locations use the requested
+  `:units`, defaulting to `:kilometers`; `line_index` is zero for a
+  LineString and identifies the member for a MultiLineString.
+- 2026-09-05: `point_on_line?/3` accepts `:tolerance` in the requested
+  `:units`; `line_slice/3` snaps off-line inputs before slicing.
 
 ## Handoff
 
-No implementation has started. The next action after Quality Foundations is to
-compare TurfJS's nearest-point-on-line metadata with an idiomatic `Geo` return
-shape and record that contract before writing tests.
+Implemented snapping and point-to-line distance with focused LineString,
+MultiLineString, and empty-line tests. The next action is a TDD slice for
+`point_on_line?/3`, including its `:tolerance` contract.
