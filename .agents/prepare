@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+# Prepare a fresh Delta-managed checkout for GeoTurf work.
+set -eu
+
+mix deps.get
+mix compile

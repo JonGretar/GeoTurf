@@ -2,9 +2,9 @@
 
 ## Purpose
 
-Use this workflow for every code change. The goal is a small, current work
-queue where another person or agent can safely pick up a task without needing
-conversation history.
+Use this workflow for planned GeoTurf library work. The goal is a small,
+current work queue where another person or agent can safely pick up a task
+without needing conversation history.
 
 ## Work States
 
@@ -19,6 +19,14 @@ conversation history.
 
 Only one plan should be `In progress` unless its file explicitly names
 independent tracks and their owners.
+
+## When A Plan Is Required
+
+Create a plan for roadmap outcomes, public behavior changes, and other
+substantive library work whose scope, acceptance criteria, or verification
+needs to survive a handoff. Do not create one for routine repository upkeep,
+such as agent configuration, formatting, or small documentation corrections,
+unless the developer asks for it.
 
 ## Lifecycle
 
